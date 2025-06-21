@@ -1,10 +1,14 @@
-# fact_checker_agent/tool/llm_calls.py
-
-
 from google import genai
 from google.genai import types
 from google.genai.types import HttpOptions
 from fact_checker_agent.models.search_helper_models import YoutubePayload
+
+# Import the PRO_MODEL from the agent definition to maintain consistency
+# Assuming agent.py is in the parent directory, or adjust import path as needed
+# For simplicity, let's redefine it here or ensure it's imported globally if possible.
+# If you prefer to strictly import, make sure the PRO_MODEL is defined in a shared constants file
+# For now, I'll hardcode it here for demonstration, but a shared constant is better practice.
+PRO_MODEL_FOR_TOOL = "gemini-2.5-pro"
 
 
 def generate_ytd_summary(query, url: str) -> YoutubePayload:
@@ -14,7 +18,9 @@ def generate_ytd_summary(query, url: str) -> YoutubePayload:
 
     client = genai.Client(http_options=HttpOptions(api_version="v1"))
 
-    model = "gemini-2.5-pro"
+    # Use the PRO_MODEL for video summarization, as it's a complex task
+    model_to_use = PRO_MODEL_FOR_TOOL
+    
     contents = [
         types.Content(
             role="user",
@@ -60,7 +66,7 @@ My output will be a structured summary that highlights the key points of the vid
     )
 
     return client.models.generate_content(
-        model=model,
+        model=model_to_use, # Use the selected model
         contents=contents,
         config=generate_content_config,
     ).parsed

@@ -1,4 +1,4 @@
-# fact_checker_agent/models/search_helper_models.py
+#fact_checker_agent/models/search_helper_models.py
 
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Union
@@ -14,18 +14,14 @@ class BasePayload(BaseModel):
     rank_reason: Optional[str] = Field(None, description="Reason for the rank")
     is_youtube : Optional[bool] = Field(None, description="Is the URL a YouTube link")
 
-
-
-
 class ImagePayload(BaseModel):
     src: str
     height: int
 
-
 class PageContent(BaseModel):
     full_text: str
 
-class YoutubePayload(BasePayload):
+class YoutubePayload(BaseModel):
     query: str
     url: str
     relative_percent: float
@@ -39,9 +35,9 @@ class VideoDetails(BaseModel):
     
     @field_validator("published_at", mode="before")
     def parse_published_at(cls, value):
-        return datetime.strptime(value, "%Y%m%d")
-
-
+        if isinstance(value, str):
+            return datetime.strptime(value, "%Y%m%d")
+        return value
 
 class URLResponseModel(BaseModel):
     page_content : Optional[PageContent] = Field(None, description="Content of the Main URL")
