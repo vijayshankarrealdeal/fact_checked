@@ -13,10 +13,10 @@ from fact_checker_agent.models.search_helper_models import BasePayload, PageCont
 from utils import sanitize_text
 
 GOOGLE_RESULT_SELECTORS = [
-    "div.g",           # Generic result block
-    "div.MjjYud",      # Used in recent versions
-    "div.Ww4FFb",      # Another common container
-    "div[data-sokoban-container]" # The one from the previous version
+    "div.g",
+    "div.MjjYud",
+    "div.Ww4FFb",
+    "div[data-sokoban-container]"
 ]
 
 class SearchExecutor:
@@ -40,22 +40,21 @@ class SearchExecutor:
     def get_driver():
         """Initializes and returns a stealth-configured Chrome WebDriver."""
         options = webdriver.ChromeOptions()
-        # FIX 1: Use the modern headless mode which is less detectable
         options.add_argument("--headless=new")
-        # Standard arguments to make it look more like a real browser
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
         options.add_argument("--window-size=1920,1080")
-        # FIX 2: Set a realistic User-Agent string
-        options.add_argument('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36')
-        # FIX 3: Set language to avoid being flagged as a bot
+        options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36')
         options.add_argument("--lang=en-US")
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
         
-        # This specifies the path inside the Docker container
-        service = webdriver.ChromeService()
-        driver = webdriver.Chrome(service=service, options=options)
+        # --- THE FIX ---
+        # We no longer need to specify the Service path.
+        # Since 'chromium-driver' is installed system-wide in the Docker container,
+        # Selenium's manager should now be able to find it automatically.
+        # This is a more robust approach.
+        driver = webdriver.Chrome(options=options)
         return driver
 
     def run_search(self, search_term: str, scroll_count: int = 3, scroll_pause: float = 0.5) -> str:
@@ -66,14 +65,13 @@ class SearchExecutor:
         driver = self.get_driver()
         all_html = []
         try:
-            # --- Page 1 ---
             url = f"https://www.google.com/search?q={search_term}&hl=en"
             driver.get(url)
             print(f"Navigated to Google Search for: {search_term}")
-
-            # FIX 4: Use WebDriverWait for more reliable loading
+            
+            # Use a very basic wait to ensure the page body has loaded.
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, GOOGLE_RESULT_SELECTORS[1]))
+                EC.presence_of_element_located((By.TAG_NAME, "body"))
             )
             
             print("Scrolling down page 1 to load all results...")
@@ -83,19 +81,19 @@ class SearchExecutor:
             all_html.append(driver.page_source)
             print("Captured HTML from page 1.")
 
-            # --- Page 2 Navigation (with fallback selectors and explicit wait) ---
             print("Attempting to navigate to page 2...")
             try:
-                # Use a more generic selector for the pagination area
-                pagination_area = WebDriverWait(driver, 5).until(
+                # Use a reliable ID for the 'Next' button link
+                pagination_link = WebDriverWait(driver, 5).until(
                     EC.presence_of_element_located((By.ID, "pnnext"))
                 )
-                pagination_area.click()
+                pagination_link.click()
                 print("  - Success! Navigated to next page.")
                 
                 WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, GOOGLE_RESULT_SELECTORS[1]))
+                    EC.presence_of_element_located((By.TAG_NAME, "body"))
                 )
+                
                 print("Scrolling down page 2 to load all results...")
                 for _ in range(scroll_count):
                     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -105,11 +103,7 @@ class SearchExecutor:
 
             except (NoSuchElementException, TimeoutException):
                 print("Could not find pagination buttons. Only one page of results may exist.")
-                # For debugging headless issues, uncomment these lines:
-                # driver.save_screenshot('headless_debug.png')
-                # with open('headless_debug.html', 'w', encoding='utf-8') as f:
-                #     f.write(driver.page_source)
-
+                
         except Exception as e:
             print(f"An error occurred during search execution: {e}")
         finally:
@@ -129,7 +123,7 @@ class SearchExecutor:
         for selector in GOOGLE_RESULT_SELECTORS:
             search_results_container = soup.select(selector)
             if search_results_container:
-                print(f"Found {len(search_results_container)} results using selector '{selector}'.")
+                # print(f"Found {len(search_results_container)} results using selector '{selector}'.")
                 break
         
         if not search_results_container:
