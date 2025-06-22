@@ -1,5 +1,4 @@
 # fact_checker_agent/tool/url_executor.py
-
 import asyncio
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -35,7 +34,7 @@ def close_all_drivers(pool: dict):
             print(f"Could not close driver for thread {thread_id}: {e}")
 
 def extract_page_info(url_data: Payload) -> Payload:
-    # THIS IS THE KEY FIX: Expect a dictionary and extract the url string from it.
+    # Expect a dictionary (Payload) and extract the url string from it.
     url_string = url_data.get('link',None)
     if not url_string:
         print(f"Invalid URL data: {url_data}. Skipping extraction.")
@@ -43,14 +42,16 @@ def extract_page_info(url_data: Payload) -> Payload:
     driver = get_pooled_driver()
     summary = ""
     try:
+        print(f"Scraping: {url_string}")
         driver.get(url_string)
         summary = parse_html_content(driver.page_source)
     except Exception as e:
         summary = f"Could not extract content from {url_string}. Reason: {str(e)}"
         print(summary)
+        # Reset driver on error
         driver.quit()
         setattr(thread_local, 'driver', None)
-    url_data['title'] = url_data.get('title',None)
+    
     url_data['content_summary'] = summary
     return url_data
 
@@ -58,7 +59,13 @@ def extract_page_info(url_data: Payload) -> Payload:
 async def extract_external_links_info(urls: list[Payload]) -> list[Payload]:
     loop = asyncio.get_event_loop()
     with ThreadPoolExecutor(max_workers=8) as executor:
-        # The list comprehension now passes the entire dictionary `url` to extract_page_info
         futures = [loop.run_in_executor(executor, extract_page_info, url) for url in urls]
         results = await asyncio.gather(*futures)
+    
+    # Clean up the single driver for the main thread if it was created
+    driver = getattr(thread_local, 'driver', None)
+    if driver:
+        driver.quit()
+        setattr(thread_local, 'driver', None)
+        
     return results

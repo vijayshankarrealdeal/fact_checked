@@ -15,4 +15,5 @@ yt-dlp
 # Database Driver (can be removed if using the line above)
 psycopg2-binary
 lxml
+google-search-results
 serpapi

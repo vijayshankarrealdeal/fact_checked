@@ -5,6 +5,9 @@ from typing import Literal, List
 
 class FactCheckResult(BaseModel):
     """Schema for the final fact-checking verdict."""
+    query: str = Field(
+        description="The original query or claim that was fact-checked."
+    )
     verdict: Literal["Likely True", "Likely False", "Mixed / Misleading", "Unverified"] = Field(
         description="The final verdict on the claim's veracity."
     )
