@@ -1,2 +1,15 @@
-google-genai
+# Core application and web framework
 streamlit
+python-dotenv
+selenium
+# Google Cloud & AI Services
+google-genai
+google-adk
+
+# Data Scraping and Parsing
+beautifulsoup4
+yt-dlp
+# selenium  <-- See WARNING below
+
+# Database Driver (can be removed if using the line above)
+psycopg2-binary

@@ -1,0 +1,13 @@
+
+gcloud builds submit --tag gcr.io/blissful-mile-461403-i2/factchecked
+
+gcloud run deploy factchecked \
+  --image gcr.io/blissful-mile-461403-i2/factchecked \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --add-cloudsql-instances=blissful-mile-461403-i2:us-central1:xchecked \
+  --set-env-vars="INSTANCE_CONNECTION_NAME=blissful-mile-461403-i2:us-central1:xchecked" \
+  --set-env-vars="POSTGRES_USER=postgres" \
+  --set-env-vars="POSTGRES_PASSWORD=google99" \
+  --set-env-vars="POSTGRES_DB=postgres"
