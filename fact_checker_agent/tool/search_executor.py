@@ -42,6 +42,11 @@ class SearchExecutor:
     def get_driver():
         """Initializes and returns a stealth-configured Chrome WebDriver."""
         options = webdriver.ChromeOptions()
+        
+        # --- THE FIX: Explicitly set the browser's binary location ---
+        # We installed 'chromium-browser', so we must tell Selenium where it is.
+        options.binary_location = "/usr/bin/chromium-browser"
+        
         # --- A comprehensive set of arguments for stability on a Linux Server VM ---
         options.add_argument("--headless=new")
         options.add_argument("--no-sandbox") # Most important for server environments
@@ -57,8 +62,7 @@ class SearchExecutor:
         options.add_argument("--lang=en-US")
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
         
-        # This simplified initialization is more robust.
-        # It relies on the system PATH to find the 'chromedriver' installed by `apt-get`.
+        # This initialization is now complete and robust for a server environment.
         driver = webdriver.Chrome(options=options)
         return driver
 
