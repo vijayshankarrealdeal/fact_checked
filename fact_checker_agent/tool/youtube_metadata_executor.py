@@ -29,12 +29,22 @@ def search_youtube_urls_by_duration(
     search_limit = max_results * 5
     search_query = f"ytsearch{search_limit}:{query}"
 
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Accept-Language': 'en-US,en;q=0.9',
+    }
+
     ydl_opts = {
         "quiet": True,
-        "extract_flat": False,  # We need full metadata (like duration) in one go
+        "extract_flat": False,
         "geo_bypass": True,
         "skip_download": True,
         "noplaylist": True,
+        # Add the headers to the request options
+        "http_headers": headers,
+        # Force the IPv4 protocol. Sometimes cloud providers have issues with IPv6.
+        "source_address": "0.0.0.0",
     }
 
     filtered_urls = []
