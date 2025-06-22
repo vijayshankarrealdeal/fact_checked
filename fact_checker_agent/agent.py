@@ -1,7 +1,7 @@
 # fact_checker_agent/agent.py
 from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent
 
-from fact_checker_agent.tool.tools_interface import search_the_web_and_youtube, summarize_web_pages, summarize_youtube_videos
+from fact_checker_agent.tool.tools_interface import search_the_web_and_youtube, summarize_web_pages, summarize_youtube_videos_in_bulk
 from fact_checker_agent.models.agent_output_models import FactCheckResult
 
 
@@ -10,9 +10,6 @@ PRO_MODEL = "gemini-2.5-pro"
 FLASH_MODEL = "gemini-2.0-flash"
 
 
-# ==============================================================================
-# AGENT 1: QUERY PROCESSOR
-# ==============================================================================
 query_processor_agent = LlmAgent(
     name="QueryProcessorAgent",
     model=FLASH_MODEL,
@@ -74,7 +71,7 @@ video_summarizer_agent = LlmAgent(
     model=PRO_MODEL,
     instruction="""
     You are a multimedia analyst. Your job is to analyze YouTube videos.
-    1. Call the `summarize_youtube_videos` tool using the original query and the list of YouTube URLs.
+    1. Call the `summarize_youtube_videos_in_bulk` tool using the original query and the list of YouTube URLs.
     2. Present the returned summary and source URLs in a clear, readable format.
 
     Original Query: {search_query}
@@ -82,7 +79,7 @@ video_summarizer_agent = LlmAgent(
     {gathered_urls[youtube_urls]}
     """,
     description="Analyzes and summarizes content from YouTube videos.",
-    tools=[summarize_youtube_videos],
+    tools=[summarize_youtube_videos_in_bulk],
     output_key="video_analysis",
 )
 

@@ -1,0 +1,242 @@
+{
+    "search_metadata": {
+        "id": "6857e8b50fa72e13ff6cc500",
+        "status": "Success",
+        "json_endpoint": "https://serpapi.com/searches/7e5b512b4070e019/6857e8b50fa72e13ff6cc500.json",
+        "created_at": "2025-06-22 11:27:49 UTC",
+        "processed_at": "2025-06-22 11:27:49 UTC",
+        "google_videos_url": "https://www.google.com/search?q=Iran+War&uule=w+CAIQICIaQXVzdGluLFRleGFzLFVuaXRlZCBTdGF0ZXM&hl=en&gl=us&udm=7",
+        "raw_html_file": "https://serpapi.com/searches/7e5b512b4070e019/6857e8b50fa72e13ff6cc500.html",
+        "total_time_taken": 1.78
+    },
+    "search_parameters": {
+        "engine": "google_videos",
+        "q": "Iran War",
+        "location_requested": "Austin, Texas, United States",
+        "location_used": "Austin,Texas,United States",
+        "google_domain": "google.com",
+        "hl": "en",
+        "gl": "us",
+        "device": "desktop"
+    },
+    "search_information": {
+        "video_results_state": "Results for exact spelling",
+        "query_displayed": "Iran War",
+        "total_results": 124000000,
+        "time_taken_displayed": 0.18
+    },
+    "video_results": [
+        {
+            "position": 1,
+            "title": "Iran strikes Israel following US attacks on Iranian nuclear sites",
+            "link": "https://www.cnn.com/2025/06/22/world/video/iran-strikes-israel-after-us-attack-digvid",
+            "displayed_link": "www.cnn.com › iran-strikes-israel-after-us-attack-digvid",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bcc91d72e238448e33b13c66fd87c021c1d7a5e878f3c5184f.jpeg",
+            "snippet": "Iran strikes Israel following US attacks on Iranian nuclear sites ... War · Israel-Hamas War · Watch · Live TV · CNN Headlines · CNN Shorts ...",
+            "duration": "0:49",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "hours_ago": 4
+                    },
+                    "extensions": [
+                        "CNN",
+                        "4 hours ago"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 2,
+            "title": "US enters Israel's war with Iran after launching strikes | 9 ...",
+            "link": "https://www.youtube.com/watch?v=Fw7OKmoMbt8",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bc824442dc9346807a2a1bd939e070abbd372bf62da25f4196.jpeg",
+            "snippet": "The United States has officially entered Israel's war with Iran, after launching strikes on three nuclear sites across the country and ...",
+            "duration": "12:00",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "news_australia": 9,
+                        "hours_ago": 3
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "9 News Australia",
+                        "3 hours ago"
+                    ]
+                }
+            },
+            "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcQgRsZDMu3vZ_EdYwe3HsruxxUsS5jd0kKTQw"
+        },
+        {
+            "position": 3,
+            "title": "Israel Iran War LIVE: Coverage from Ground Zero as Iran ...",
+            "link": "https://www.youtube.com/watch?v=icQdhu_Wpy4",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bc9151e56607bbc8043ccfdcbd19267c03cb3a2a878ee37d07.jpeg",
+            "snippet": "Israel Iran War LIVE: Coverage from Ground Zero as Iran Attacks Tel Aviv | Trump Bombs Iran | N18G Israel and Iran started attacking each ...",
+            "duration": "2:55:56",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "hours_ago": 4
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "Firstpost",
+                        "4 hours ago"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 4,
+            "title": "Iran-Israel War: Iran Claims It Targeted Ben Gurion Airport ...",
+            "link": "https://www.youtube.com/watch?v=D8AwDw7txq8",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bc60793644fcd67ef8a6d5de24caaf0e9b07455e9eb036eab4.jpeg",
+            "snippet": "Iran claims it targeted Ben Gurion airport, biological research center #iranisraelwar #iran #israel About Channel: WION The World is One ...",
+            "duration": "5:55",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "hours_ago": 3
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "WION",
+                        "3 hours ago"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 5,
+            "title": "BREAKING: U.S. Joins War, Destroys Iran's Nuclear Sites ...",
+            "link": "https://www.youtube.com/watch?v=kYDFw4wUI90",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bc4902136a8fb82ffb451cca9a3ffa8fa2179b1041189b00fc.jpeg",
+            "snippet": "Join Yair Pinto and senior Middle East correspondent Mati Shoshani on Boots on the Ground as we bring you historic breaking news: the ...",
+            "duration": "56:13",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "hours_ago": 5
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "TBN Israel",
+                        "5 hours ago"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 6,
+            "title": "US Strikes Iran | Iran Going To Hit Hard, Israel Started The ...",
+            "link": "https://www.youtube.com/watch?v=S6-yw3D-P80",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bc071772d70ec2d8fc7c388bfb9a2adb7d8b9efffb7ff3e3eb.jpeg",
+            "snippet": "Iran Going To Hit Hard, Israel Started The War: Iranian Journalist To NDTV #US #USAttacks #Iran #DonaldTrump #USAttacksIran #USIran ...",
+            "rich_snippet": {
+                "top": {
+                    "extensions": [
+                        "YouTube",
+                        "NDTV"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 7,
+            "title": "Iran: The US has launched a dangerous war, 'definitely at war '",
+            "link": "https://www.youtube.com/watch?v=8v0RNonvgSg",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://serpapi.com/searches/6857e8b50fa72e13ff6cc500/images/6f5b1250345e52bce53093aaf18deaed3dbf74579c642b3cd4b6b631a6e84b46.jpeg",
+            "snippet": "The United States launched a major military operation against Iran, targeting three of its key nuclear facilities: Fordow, Natanz, ...",
+            "duration": "10:43",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "hours_ago": 2
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "LiveNOW from FOX",
+                        "2 hours ago"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 8,
+            "title": "Israel Iran War LIVE: Israel's Netanyahu Speaks after Trump ...",
+            "link": "https://www.youtube.com/watch?v=aihRe1RaHgA",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQJ6TqYFtIDHzEDePp1jcBDwntUMz8Vrsc3IYZLnI04KjN&s",
+            "snippet": "Israel Iran War LIVE: Israel's Netanyahu Speaks after Trump Attacks Iran | US Attacks Iran | N18G Israeli PM Benjamin Netanyahu thanked US ...",
+            "duration": "4:37:02",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "hours_ago": 4
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "Firstpost",
+                        "4 hours ago"
+                    ]
+                }
+            }
+        },
+        {
+            "position": 9,
+            "title": "U.S. bombs three Iran nuclear sites, entering war",
+            "link": "https://www.youtube.com/watch?v=jj5nE5w-dc8",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLoH1LoRZYN1952B-RLHdEIeLE5oTH7T3xoVYxzhHBLet3&s",
+            "snippet": "President Trump announced Saturday that the United States had bombed three Iranian nuclear sites, including the Fordow site that is located ...",
+            "duration": "4:16",
+            "rich_snippet": {
+                "top": {
+                    "detected_extensions": {
+                        "ktla": 5,
+                        "hours_ago": 6
+                    },
+                    "extensions": [
+                        "YouTube",
+                        "KTLA 5",
+                        "6 hours ago"
+                    ]
+                }
+            },
+            "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcQx1aeMjRQslwRPLZjX_jMxZccZZwNeMmSMLQ"
+        },
+        {
+            "position": 10,
+            "title": "Iran Israel War News LIVE: Iran Hints 'No Radiation Leak' After ...",
+            "link": "https://www.youtube.com/watch?v=-V2qKZY5HWw",
+            "displayed_link": "www.youtube.com › watch",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk84luPXEpx-l19djrNiKuOAVj4TRGMkRnQqhU6F9c3prn&s",
+            "snippet": "Iran Israel War News LIVE: Iran Hints 'No Radiation Leak' After US Strikes | Donald Trump News #iranmissilestrike #israeliranwar ...",
+            "rich_snippet": {
+                "top": {
+                    "extensions": [
+                        "YouTube",
+                        "India Today"
+                    ]
+                }
+            }
+        }
+    ],
+    "pagination": {
+        "current": 1,
+        "next": "https://www.google.com/search?q=Iran+War&sca_esv=66ed4dad37329696&udm=7&gl=us&hl=en&ei=tuhXaNbhGunc5OUP6ZapuAo&start=10&sa=N"
+    },
+    "serpapi_pagination": {
+        "current": 1,
+        "next_link": "https://serpapi.com/search.json?device=desktop&engine=google_videos&gl=us&google_domain=google.com&hl=en&location=Austin%2C+Texas%2C+United+States&q=Iran+War&start=10",
+        "next": "https://serpapi.com/search.json?device=desktop&engine=google_videos&gl=us&google_domain=google.com&hl=en&location=Austin%2C+Texas%2C+United+States&q=Iran+War&start=10"
+    }
+}

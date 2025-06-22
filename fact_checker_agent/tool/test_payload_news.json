@@ -1,0 +1,313 @@
+{
+    "search_metadata": {
+        "id": "6857e5a1fdfbab9dce11829f",
+        "status": "Success",
+        "json_endpoint": "https://serpapi.com/searches/72c5d42852a9aa7b/6857e5a1fdfbab9dce11829f.json",
+        "created_at": "2025-06-22 11:14:41 UTC",
+        "processed_at": "2025-06-22 11:14:41 UTC",
+        "google_url": "https://www.google.com/search?q=Iran+War&oq=Iran+War&uule=w+CAIQICINVW5pdGVkIFN0YXRlcw&hl=en&gl=us&num=25&tbm=nws&filter=0&sourceid=chrome&ie=UTF-8",
+        "raw_html_file": "https://serpapi.com/searches/72c5d42852a9aa7b/6857e5a1fdfbab9dce11829f.html",
+        "total_time_taken": 3.95
+    },
+    "search_parameters": {
+        "engine": "google",
+        "q": "Iran War",
+        "location_requested": "United States",
+        "location_used": "United States",
+        "google_domain": "google.com",
+        "hl": "en",
+        "gl": "us",
+        "num": "25",
+        "device": "desktop",
+        "tbm": "nws",
+        "filter": "0"
+    },
+    "search_information": {
+        "query_displayed": "Iran War",
+        "total_results": 24000000,
+        "time_taken_displayed": 0.28,
+        "news_results_state": "Results for exact spelling"
+    },
+    "news_results": [
+        {
+            "position": 1,
+            "link": "https://www.theguardian.com/world/live/2025/jun/22/israel-iran-war-live-trump-says-us-has-attacked-nuclear-sites-in-iran-including-fordow",
+            "title": "Israel-Iran war live: Trump says key nuclear facilities ‘obliterated’ by US; missiles hit Israel after Iran launches retaliatory strikes",
+            "source": "The Guardian",
+            "date": "LIVE45 minutes ago",
+            "snippet": "In a post on social media earlier, the US president said 'A full payload of BOMBS was dropped on the primary site, Fordow.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d85b82cc4c86b174f8525a8ffceee888c8.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d89d4d2d1607b386f94ac2cebd5f5efa229e658233283f5d12.jpeg"
+        },
+        {
+            "position": 2,
+            "link": "https://apnews.com/live/israel-iran-war-updates",
+            "title": "Live updates: US intervenes in Israel-Iran war, strikes Iranian nuclear sites",
+            "source": "AP News",
+            "date": "LIVE20 minutes ago",
+            "snippet": "The Atomic Energy Organization of Iran confirmed that attacks took place on its Fordo, Isfahan and Natanz sites. The UN watchdog said there...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d885d17dcfd8fbe24db573eecbea402fa6.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8aa5b5669eb71bd7cf70cdd5fe218a282991c9ebd9af1d845.jpeg"
+        },
+        {
+            "position": 3,
+            "link": "https://www.aljazeera.com/news/2025/6/22/patently-illegal-critics-dispute-legality-of-trumps-iran-strikes",
+            "title": "‘Patently illegal’: Critics dispute legality of Trump’s Iran strikes",
+            "source": "Al Jazeera",
+            "date": "47 minutes ago",
+            "snippet": "Democrats stress that only US Congress – not the president – has the authority to take the country to war.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d852fe22de6f1533f2eb10ef09076f5a43.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8df46ef21996538205de8f77ae6bb3ee1f7ee74885cedf482.jpeg"
+        },
+        {
+            "position": 4,
+            "link": "https://www.bbc.com/news/live/ckg3rzj8emjt",
+            "title": "Iran accuses Trump of 'betrayal' after US strikes nuclear sites - live updates",
+            "source": "BBC",
+            "date": "LIVE8 minutes ago",
+            "snippet": "Donald Trump says the strikes 'totally obliterated' Iran's nuclear enrichment facilities, as he brings the US directly into the Israel-Iran conflict.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8d38250a430160629e5e47dcb33d0702f.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d853477269f7120937ce02aa227a12abad1f685db6a5ac3bb4.jpeg"
+        },
+        {
+            "position": 5,
+            "link": "https://www.cnn.com/world/live-news/israel-iran-conflict-06-22-25-intl-hnk",
+            "title": "Live updates: Iran warns US strikes will have ‘everlasting consequences’ as Trump says nuclear sites ‘obliterated’",
+            "source": "CNN",
+            "date": "LIVE1 hour ago",
+            "snippet": "... • US strikes Iran: The US struck several key Iranian nuclear facilities early Sunday, including Fordow, Natanz and Isfahan.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8e85f39ce69fd713c5733dae87f168c83.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8e031a25ccc2df9e2d9c9d5132d901f1aacd296b9aa9a2129.jpeg"
+        },
+        {
+            "position": 6,
+            "link": "https://www.nytimes.com/2025/06/21/us/politics/trump-iran-risks.html",
+            "title": "With Military Strike His Predecessors Avoided, Trump Takes a Huge Gamble",
+            "source": "The New York Times",
+            "date": "7 hours ago",
+            "snippet": "President Trump is betting the United States can repel whatever retaliation Iran orders, and that it has destroyed the regime's chances of...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8bb8a52a9c099516cfbe023260d5f3fad.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8074d4dfa4b3564de9a78ea0121ad1cf73c6b4be7f8d2ee8f.jpeg"
+        },
+        {
+            "position": 7,
+            "link": "https://www.foxnews.com/politics/unconstitutional-congress-evokes-new-war-powers-resolution-reject-trumps-strikes-iran",
+            "title": "'Not constitutional': Congress invokes new War Powers Resolution to reject Trump's strikes on Iran",
+            "source": "Fox News",
+            "date": "9 hours ago",
+            "snippet": "Reps. Khanna and Massie criticize President Donald Trump for ordering strikes on Iranian nuclear sites without congressional approval,...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d832ba5c07ea9a0e181f66228756a850ff.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d899161e0befaa5fc15d55e55e7e4962a162a6bbb44538ac8d.jpeg"
+        },
+        {
+            "position": 8,
+            "link": "https://www.foreignaffairs.com/middle-east/americas-war-iran",
+            "title": "America’s War With Iran",
+            "source": "Foreign Affairs",
+            "date": "7 hours ago",
+            "snippet": "The United States has attacked Iran. Just days after suggesting he might delay any American military action for weeks, U.S. President Donald...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8d7414479c18b248e7338874a62965f56.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d80255cdaf8a58d1eb592b4e93ab78c8b7d81054d3c92897e4.jpeg"
+        },
+        {
+            "position": 9,
+            "link": "https://www.understandingwar.org/backgrounder/iran-update-special-report-june-21-2025-evening-edition",
+            "title": "Iran Update Special Report, June 21, 2025, Evening Edition",
+            "source": "Institute for the Study of War",
+            "date": "12 hours ago",
+            "snippet": "Iranian Supreme Leader Ali Khamenei has begun implementing emergency succession measures in response to escalating Israeli strikes and the...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8add88bda27a2e363ed281cfd4e9d0570.jpeg",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d80c8f503cc28b6026c809d5f83748e4b3371ce806ca3b150d.jpeg"
+        },
+        {
+            "position": 10,
+            "link": "https://www.reuters.com/world/middle-east/russias-medvedev-says-trump-started-new-war-us-after-attack-iran-2025-06-22/",
+            "title": "Russia's Medvedev says Trump started new war for US after attack on Iran",
+            "source": "Reuters",
+            "date": "2 hours ago",
+            "snippet": "Dmitry Medvedev, the deputy chairman of Russia's Security Council, said on Sunday that U.S. President Donald Trump had started a new war for...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d845ec7c01c1c117660eb8e69406e495d4.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d833a87edbe3ed11b2550d853f38582a83496a31221799132b.jpeg"
+        },
+        {
+            "position": 11,
+            "link": "https://apnews.com/article/israel-iran-missile-attacks-nuclear-news-tehran-trump-06-17-2025-3f08988b5e8fd375645967b6e22916f3",
+            "title": "Intense Israeli strikes hit Tehran after Trump demands ‘unconditional surrender’",
+            "source": "AP News",
+            "date": "4 days ago",
+            "snippet": "Intense Israeli airstrikes targeted Iran's capital early Wednesday after it issued a warning about a new area it could target, a day after...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d862c21f12ac6286be07cb014022746324.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d862c21f12ac6286be26803f972b7925a016fa25fe7fb92907.jpeg"
+        },
+        {
+            "position": 12,
+            "link": "https://www.noahpinion.blog/p/the-economic-consequences-of-a-war",
+            "title": "The economic consequences of a war with Iran",
+            "source": "Noahpinion | Noah Smith",
+            "date": "3 hours ago",
+            "snippet": "Well, I suppose Trump doesn't actually chicken out of everything. The U.S. has bombed Iran's three nuclear enrichment facilities.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8227847761b7800e9659c871477926e7e.jpeg",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8227847761b7800e923b5434a6b71b8eaeaadfcd010795504.jpeg"
+        },
+        {
+            "position": 13,
+            "link": "https://www.pbs.org/newshour/politics/democrats-are-at-odds-over-israel-iran-war-as-trump-announces-u-s-strikes-on-iran",
+            "title": "Democrats are at odds over Israel-Iran war as Trump announces U.S. strikes on Iran",
+            "source": "PBS",
+            "date": "8 hours ago",
+            "snippet": "After nearly two years of stark divisions over the war in Gaza and support for Israel, Democrats seemed at odds over policy toward Iran as...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8c4b15c24beaf724a63e99958a41fdb75.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8c4b15c24beaf724aa10ad0640a2a1f1f2e76e7d537d12c5d.jpeg"
+        },
+        {
+            "position": 14,
+            "link": "https://www.wlwt.com/article/us-has-struck-three-iranian-nuclear-sites-joining-israeli-air-campaign/65142598",
+            "title": "US intervenes in war between Israel and Iran, striking 3 Iranian nuclear sites",
+            "source": "WLWT",
+            "date": "2 hours ago",
+            "snippet": "The United States attacked three sites in Iran early Sunday, inserting itself into Israel's war aimed at destroying the Iranian nuclear...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8fd13ec81f61e2300e5d4534257deca2b.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8fd13ec81f61e23000902413444e612b914f6ffc394e1e470.jpeg"
+        },
+        {
+            "position": 15,
+            "link": "https://www.nytimes.com/2025/06/21/world/middleeast/iran-israel-regional-consequences.html",
+            "title": "As U.S. Enters War Against Iran, the Mideast Fears What’s Next",
+            "source": "The New York Times",
+            "date": "8 hours ago",
+            "snippet": "The fight between two well-armed Mideast powers has their neighbors worried about the conflict spreading, a concern only deepened by U.S....",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8339cc8990f55ea4b616310dc69cd891e.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8339cc8990f55ea4b4177333b6c0d3aba49ab06176c2b668a.jpeg"
+        },
+        {
+            "position": 16,
+            "link": "https://www.aljazeera.com/news/2025/6/22/everlasting-consequences-world-reacts-to-us-attacks-on-iran",
+            "title": "World reacts to US attacks on Iran",
+            "source": "Al Jazeera",
+            "date": "4 hours ago",
+            "snippet": "A roundup of reactions as US joins Israel's war and attacks three Iranian nuclear sites.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d83a511ac42ee5cd2d17da70840befda7a.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d83a511ac42ee5cd2df049db2f3c1c0f3b5201889c79c2b0d0.jpeg"
+        },
+        {
+            "position": 17,
+            "link": "https://time.com/7296469/u-s-strikes-iran-nuclear-trump-war/",
+            "title": "U.S. Joins Israel in Strikes on Iranian Nuclear Sites, Risking Wider War",
+            "source": "Time Magazine",
+            "date": "8 hours ago",
+            "snippet": "The operation marks the most direct American military intervention inside Iran in decades, reigniting fears of a widening conflict that...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d818def240c2e9d19c124e9d51091be40a.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d818def240c2e9d19c855a63fbb45ed4a008229db9d367c955.jpeg"
+        },
+        {
+            "position": 18,
+            "link": "https://www.cbsnews.com/news/iran-israel-war-middle-east-us-military-gaza/",
+            "title": "Israel-Iran war enters second week with more strikes as warning against U.S. intervention issued",
+            "source": "CBS News",
+            "date": "10 hours ago",
+            "snippet": "Iranian Foreign Minister Abbas Araghchi warned that any military action by the U.S. in the escalating war with Israel would be very,...","favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8e4a1c0a7f1021465be8c47c27584877f.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8e4a1c0a7f1021465380a7e04c720297703d851312211452e.jpeg"
+        },
+        {
+            "position": 19,
+            "link": "https://www.bbc.com/news/articles/c9dgpjqg12lo",
+            "title": "The US has changed the course of the conflict - how will Iran respond?",
+            "source": "BBC",
+            "date": "3 hours ago",
+            "snippet": "Whether the Middle East conflict escalates further will depend on Iran and its allies, writes the BBC's Jo Floto.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8b86623dd63e15512dacd7b050973ec3c.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8b86623dd63e155121f66c7e34b305c605c1d4c30872e9f05.jpeg"
+        },
+        {
+            "position": 20,
+            "link": "https://truthout.org/articles/trump-bombs-iran-then-demands-iran-agree-to-end-the-war/",
+            "title": "Trump Bombs Iran, Then Demands Iran Agree to End the War",
+            "source": "Truthout",
+            "date": "7 hours ago",
+            "snippet": "After the unprovoked attack, Trump demanded that Iran effectively surrender while continuing to threaten the country.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d82d4c5207071db66d73947417ba1c22f2.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d82d4c5207071db66d8f3492281837bf838a62592e7ae71615.jpeg"
+        },
+        {
+            "position": 21,
+            "link": "https://www.vox.com/world-politics/417460/iran-attack-trump-war",
+            "title": "US strikes Iran: This time it’s Trump’s war",
+            "source": "Vox",
+            "date": "7 hours ago",
+            "snippet": "Donald Trump brings America into Israel's war on Iran.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d85b2151495602b4b1185da2a4e3214ab3.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d85b2151495602b4b1aa6960f9692d4a7bc909ee3204fa5344.jpeg"
+        },
+        {
+            "position": 22,
+            "link": "https://www.israelhayom.com/2025/06/22/the-untold-story-of-the-iran-war-how-israel-did-the-unthinkable/",
+            "title": "The untold story of the Iran war: How Israel did the unthinkable",
+            "source": "www.israelhayom.com",
+            "date": "50 minutes ago",
+            "snippet": "In early January, an Israeli official met with Minister of Strategic Affairs Ron Dermer on the eighth floor of the Prime Minister's Office...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8f8a994a3c5f36b45a999e73b4b0f45c8.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8f8a994a3c5f36b454877d81bbb7c99d29735af47eff9490f.jpeg"
+        },
+        {
+            "position": 23,
+            "link": "https://theconversation.com/the-us-has-entered-the-israel-iran-war-here-are-3-scenarios-for-what-might-happen-next-259509",
+            "title": "The US has entered the Israel-Iran war. Here are 3 scenarios for what might happen next",
+            "source": "The Conversation",
+            "date": "5 hours ago",
+            "snippet": "After prevaricating about whether the United States would enter Israel's war on Iran, President Donald Trump finally made a decision.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8f77eac465c0f9e577cac0a7079d25d97.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d8f77eac465c0f9e571b7cbd6c2dc438eb6ce943cb2ce4f105.jpeg"
+        },
+        {
+            "position": 24,
+            "link": "https://apnews.com/article/israel-iran-war-nuclear-trump-bomber-news-06-22-2025-c2baca52babe915e033ae175ce8b2687",
+            "title": "US strikes 3 Iranian nuclear sites, inserting itself into Israel’s war with Iran",
+            "source": "AP News",
+            "date": "3 hours ago",
+            "snippet": "The United States has attacked three sites in Iran, inserting itself into Israel's war aimed at destroying the Iranian nuclear program.",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d86e37d8c51527583b2c918f36a2daf1e0.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d86e37d8c51527583be1acf297300dc91221468fe90f57de42.jpeg"
+        },
+        {
+            "position": 25,
+            "link": "https://apnews.com/article/israel-iran-war-nuclear-talks-geneva-news-06-21-2025-a7b0cdaba28b5817467ccf712d214579",
+            "title": "US inserts itself into Israel’s war with Iran, striking 3 Iranian nuclear sites",
+            "source": "AP News",
+            "date": "6 hours ago",
+            "snippet": "Iran's top diplomat warned Sunday that the U.S. attacks on its nuclear sites “will have everlasting consequences” and that Tehran “reserves...",
+            "favicon": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d80d83028c56c4347c908a64290e113d8a.png",
+            "thumbnail": "https://serpapi.com/searches/6857e5a1fdfbab9dce11829f/images/e28d482a726a65d80d83028c56c4347c5e5a979f880de118d2b60df494d9937e.jpeg"
+        }
+    ],
+    "pagination": {
+        "current": 1,
+        "next": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=25&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8NMDegQIBRAW",
+        "other_pages": {
+            "2": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=25&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAE",
+            "3": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=50&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAG",
+            "4": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=75&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAI",
+            "5": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=100&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAK",
+            "6": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=125&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAM",
+            "7": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=150&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAO",
+            "8": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=175&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAQ",
+            "9": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=200&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAS",
+            "10": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&tbm=nws&ei=peVXaPPvFaLCp84P98XMoAo&start=225&sa=N&filter=0&ved=2ahUKEwiz1vme84SOAxUi4ckDHfciE6QQ8tMDegQIBRAU"
+        }
+    },
+    "serpapi_pagination": {
+        "current": 1,
+        "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=25&tbm=nws",
+        "next": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=25&tbm=nws",
+        "other_pages": {
+            "2": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=25&tbm=nws",
+            "3": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=50&tbm=nws",
+            "4": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=75&tbm=nws",
+            "5": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=100&tbm=nws",
+            "6": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=125&tbm=nws",
+            "7": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=150&tbm=nws",
+            "8": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=175&tbm=nws",
+            "9": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=200&tbm=nws",
+            "10": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=225&tbm=nws"
+        }
+    }
+}

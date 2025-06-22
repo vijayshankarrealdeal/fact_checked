@@ -1,23 +1,21 @@
 # engine/utils.py
 
-
 import re
-from typing import List, Dict, Any
 from bs4 import BeautifulSoup
-from fact_checker_agent.models.search_helper_models import BasePayload, ImagePayload
+from datetime import timedelta
 
 def sanitize_text(text: str) -> str:
     """Sanitizes text by removing excessive whitespace and non-printable characters."""
     if not text:
         return ""
     # Collapse multiple spaces, newlines, and tabs into a single space
-    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r"\s+", " ", text)
     # Remove control characters but keep standard punctuation
-    text = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', text)
+    text = re.sub(r"[\x00-\x1f\x7f-\x9f]", "", text)
     return text.strip()
 
 
-def parse_html_content(html: str) -> Dict[str, Any]:
+def parse_html_content(html: str) -> str:
     """
     Parses HTML to extract clean text, links, and images in a single pass.
     This is the centralized function for all HTML parsing needs.
@@ -26,67 +24,69 @@ def parse_html_content(html: str) -> Dict[str, Any]:
         html: The raw HTML content as a string.
 
     Returns:
-        A dictionary containing:
-        - 'full_text': Cleaned, human-readable text from the page.
-        - 'links': A list of BasePayload objects for each discovered link.
-        - 'images': A list of ImagePayload objects for each discovered image.
+        full_text: Cleaned, human-readable text from the page.
     """
 
-    soup = BeautifulSoup(html, "lxml") # Use lxml for performance
-    results = {
-        "full_text": "",
-        "links": [],
-        "images": []
-    }
-
-    # --- 1. Extract Links ---
-    # Create a copy of the soup to avoid modifying the original during link extraction
-    link_soup = BeautifulSoup(str(soup), "lxml")
-    for a in link_soup.find_all("a", href=True):
-        link = a.get("href")
-        if link and link.startswith("https"):
-            text = sanitize_text(a.get_text())
-            results["links"].append(BasePayload(url=link, title=text))
-    print(f"Extracted {len(results['links'])} total links from page.")
-
-    # --- 2. Extract Images ---
-    for img in soup.find_all("img", src=True):
-        src = img.get("src")
-        height = img.get("height")
-        try:
-            # Only consider images with a reasonable height
-            if height and int(height) > 100:
-                 results["images"].append(ImagePayload(src=src, height=int(height)))
-        except (ValueError, TypeError):
-            continue # Ignore images with invalid height attribute
-    print(f"Extracted {len(results['images'])} relevant images.")
-
-    # --- 3. Extract and Clean Full Text ---
-    # Remove non-content tags before extracting text for better readability
+    soup = BeautifulSoup(html, "lxml")  # Use lxml for performance
     for tag in soup(["script", "style", "nav", "footer", "aside", "form"]):
         tag.decompose()
-
-    full_text = soup.get_text(separator=' ', strip=True)
-    results["full_text"] = sanitize_text(full_text)
-    print(f"Extracted text content (length: {len(results['full_text'])} chars).")
-
-    return results
-
-# The old functions are no longer needed, as their logic is consolidated above.
-# We keep these two as thin wrappers ONLY if they are called directly by Prefect flows
-# and you want to maintain the task names. Otherwise, they can be removed.
-
-
-def extract_url_and_text(html: str) -> List[BasePayload]:
-    """Wrapper task to get links from the main parsing function."""
-    return parse_html_content(html).get("links", [])
+    full_text = soup.get_text(separator=" ", strip=True)
+    full_text = sanitize_text(full_text)
+    print(f"Extracted text content (length: {len(full_text)} chars).")
+    return full_text
 
 
 def extract_texts(html: str) -> str:
     """Wrapper task to get text from the main parsing function."""
-    return parse_html_content(html).get("full_text", "")
+    return parse_html_content(html)
 
 
-def extract_image_data(html: str) -> List[ImagePayload]:
-    """Wrapper task to get images from the main parsing function."""
-    return parse_html_content(html).get("images", [])
+
+def parse_duration(time_str: str) -> timedelta:
+    """
+    (Helper function)
+    Parses a time string in H:M:S, M:S, or S format into a timedelta object.
+    Returns a timedelta object.
+    Raises ValueError for invalid formats.
+    """
+    parts = list(map(int, time_str.split(':')))
+    
+    hours, minutes, seconds = 0, 0, 0
+
+    if len(parts) == 3:
+        hours, minutes, seconds = parts
+    elif len(parts) == 2:
+        minutes, seconds = parts
+    elif len(parts) == 1:
+        seconds = parts[0]
+    else:
+        raise ValueError(f"Invalid time format in string: '{time_str}'")
+        
+    return timedelta(hours=hours, minutes=minutes, seconds=seconds)
+
+
+def is_duration_within_limit(time_string: str, limit_minutes: int) -> bool:
+    """
+    Checks if a time duration string is less than or equal to a given limit in minutes.
+
+    Args:
+        time_string (str): The time duration to check (e.g., "4:37:02", "8:30").
+        limit_minutes (int): The maximum allowed duration in minutes.
+
+    Returns:
+        bool: True if the duration is within the limit, False otherwise.
+    """
+    try:
+        # 1. Convert the limit in minutes into a timedelta object
+        limit_duration = timedelta(minutes=limit_minutes)
+        
+        # 2. Convert the time string into a timedelta object using the helper
+        actual_duration = parse_duration(time_string)
+        
+        # 3. Perform the comparison and return the boolean result
+        return actual_duration <= limit_duration
+        
+    except (ValueError, TypeError):
+        # Catches errors from parsing bad strings (e.g., "abc") or non-string inputs.
+        # A duration that can't be parsed is not within the limit.
+        return False

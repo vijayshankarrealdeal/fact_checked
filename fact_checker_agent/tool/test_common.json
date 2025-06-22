@@ -1,0 +1,588 @@
+{
+    "search_metadata": {
+        "id": "6857e61f8681807f2673d8c6",
+        "status": "Success",
+        "json_endpoint": "https://serpapi.com/searches/a16a2a19f3d535e5/6857e61f8681807f2673d8c6.json",
+        "created_at": "2025-06-22 11:16:47 UTC",
+        "processed_at": "2025-06-22 11:16:47 UTC",
+        "google_url": "https://www.google.com/search?q=Iran+War&oq=Iran+War&uule=w+CAIQICINVW5pdGVkIFN0YXRlcw&hl=en&gl=us&num=25&filter=0&sourceid=chrome&ie=UTF-8",
+        "raw_html_file": "https://serpapi.com/searches/a16a2a19f3d535e5/6857e61f8681807f2673d8c6.html",
+        "total_time_taken": 1.00
+    },
+    "search_parameters": {
+        "engine": "google",
+        "q": "Iran War",
+        "location_requested": "United States",
+        "location_used": "United States",
+        "google_domain": "google.com",
+        "hl": "en",
+        "gl": "us",
+        "num": "25",
+        "device": "desktop",
+        "filter": "0"
+    },
+    "search_information": {
+        "query_displayed": "Iran War",
+        "total_results": 629000000,
+        "time_taken_displayed": 0.43,
+        "organic_results_state": "Results for exact spelling"
+    },
+    "knowledge_graph": {
+        "title": "Iran–Iraq War",
+        "type": "Sep 22, 1980 – Aug 20, 1988",
+        "entity_type": "events, history, event",
+        "kgmid": "/m/03vc6",
+        "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/m/03vc6&hl=en-US&q=Iran%E2%80%93Iraq+War",
+        "serpapi_knowledge_graph_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en-US&kgmid=%2Fm%2F03vc6&location=United+States&num=25&q=Iran%E2%80%93Iraq+War",
+        "image": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/81c8f404d8675b1a524043a0cf1c98d04023a4cc385260a5.jpeg",
+        "description": "The Iran–Iraq War was an armed conflict between Iran and Iraq that lasted from September 1980 to August 1988. Active hostilities began with the Iraqi invasion of Iran and lasted for nearly eight years, until the acceptance of United Nations Security Council Resolution 598 by both sides.",
+        "source": {
+            "name": " Wikipedia",
+            "link": "https://en.wikipedia.org/wiki/Iran%E2%80%93Iraq_War"
+        },
+        "location": "Iran, Iraq, Persian Gulf (Arabian Gulf)",
+        "location_links": [
+            {
+                "text": "Iran",
+                "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Iran&si=AMgyJEvmed8FkyEkpEJ8jfGhZkakcy5kQho_c4G-QJRdklshMiV9b41tqHbLAZFhmYgmiRj_oDDFWxlX7fMQCsWKS1f2NaR8Brb9dRdOFqKJsiFGupVexWEAKhhf9016mRVT4W7bhc5S7dJcF39j45tBTxGuKVsMemlkXCPl2-NsHQ5OkMnrCzJBeYE-3H1rlo6Pqxdg1ikkCrv-ubB-jwpj-CZGfJJntf3qR4mz9ivgARoBWEQCcC8%3D&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQmxN6BAgwEAI"
+            },
+            {
+                "text": "Iraq",
+                "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Iraq&si=AMgyJEveiRpRWbYSNPkEPxCUbItHSvun4xkRgDDPLmrOjDx35Bh1xtcC1LB8kB1VMnUL2PaiJxwJ5sUapbEB7i7mxfMRFcUDRI9az-FkwzosBEPsFXPhS0CM8bW30s2ipvuiizR-276u14B4mtc-COEzwgPaFwoDF-VdR0F0sBWEjFvJwJOcc7uaKhBWZDlrDXa5uofL2NQSi5jMqw9H-zHeOsRHlEo6VQNI4wTt7606--uel_TSmMc6AbYcXCE-PHYqIPAUyxOV&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQmxN6BAgwEAM"
+            },
+            {
+                "text": "Persian Gulf (Arabian Gulf)",
+                "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Persian+Gulf&si=AMgyJEvmed8FkyEkpEJ8jfGhZkakcy5kQho_c4G-QJRdklshMhZGzvN9fsxQX78K0iWvl0nYHLDe9VFN59WXfjsJIVEJD4v4kCGmCUv9h5EX_rv--5EomHg6Ld0jsmDl_1aKenl2nCN9LJ4pcxiiB0aunfpBty2CKlkXwPQGPQzmnBQgv-z6YTcVJiyH4xVX7A_saiQmB-ZLBqit__OygvtDDt41vO1Dh-lDJRAjS7neBex3ZeSOZt9Ns39eMSD8DO8MWCe2PI6e&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQmxN6BAgwEAQ"
+            }
+        ],
+        "dates": "Sep 22, 1980 – Aug 20, 1988",
+        "result": "Inconclusive",
+        "territorial_changes": "Status quo ante bellum"
+    },
+    "related_questions": [
+        {
+            "question": "Why are Iran and the US fighting?",
+            "snippet": "Iranian explanations for the animosity with the United States include “the natural and unavoidable conflict between the Islamic system” and “such an oppressive power as the United States, which is trying to establish a global dictatorship and further its own interests by dominating other nations and trampling on their ...",
+            "title": "Iran–United States relations - Wikipedia",
+            "link": "https://en.wikipedia.org/wiki/Iran%E2%80%93United_States_relations#:~:text=Iranian%20explanations%20for%20the%20animosity,nations%20and%20trampling%20on%20their",
+            "displayed_link": "https://en.wikipedia.org › wiki › Iran–United_States_rela...",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/1d46b5725a75d74c69fe96b7a25d6bf8d7301932c638557ef1cdd0c8420d28a6.png",
+            "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaHkgYXJlIElyYW4gYW5kIHRoZSBVUyBmaWdodGluZz8iLCJsayI6IkdodDNhSGtnYVhNZ2FYSmhiaUJoYm1RZ2RYTWdabWxuYUhScGJtYyIsImJzIjoiYzIzT3NRNkNNQlNGNGJoMmNzUWE1TUxzMU1ISmhFVUg0bWhNNTZxVjNvUVUwMElhbjhCWDhERjhRUk9SZ2hEal91VV9oMnhKek5VTmhKR1FHYUZCNkROVVNzSmhEeGZNVllVNlQ0UFhqSVYwN2hxSEZyQm50ZjBTc2lFTHJrcFF3dnJNVVVvTnFNRUpBdzRybFFiM0ZZdG82RHFFX3hESlJtZXNFYkpvZDlyZ2NPYTVaakdOLWpNRHd6RWpPNUp3aFNmMVFkZlNTWE9waTZWUGxhYXJwOEdEczRTQy00Vy0xVGlmbjA3ZSIsImlkIjoiZmNfSC1aWGFNYjBJTENkaGJJUF9vbWt3QTRfMSJ9",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaHkgYXJlIElyYW4gYW5kIHRoZSBVUyBmaWdodGluZz8iLCJsayI6IkdodDNhSGtnYVhNZ2FYSmhiaUJoYm1RZ2RYTWdabWxuYUhScGJtYyIsImJzIjoiYzIzT3NRNkNNQlNGNGJoMmNzUWE1TUxzMU1ISmhFVUg0bWhNNTZxVjNvUVUwMElhbjhCWDhERjhRUk9SZ2hEal91VV9oMnhKek5VTmhKR1FHYUZCNkROVVNzSmhEeGZNVllVNlQ0UFhqSVYwN2hxSEZyQm50ZjBTc2lFTHJrcFF3dnJNVVVvTnFNRUpBdzRybFFiM0ZZdG82RHFFX3hESlJtZXNFYkpvZDlyZ2NPYTVaakdOLWpNRHd6RWpPNUp3aFNmMVFkZlNTWE9waTZWUGxhYXJwOEdEczRTQy00Vy0xVGlmbjA3ZSIsImlkIjoiZmNfSC1aWGFNYjBJTENkaGJJUF9vbWt3QTRfMSJ9"
+        },
+        {
+            "question": "Who has Iran been in war with?",
+            "snippet": "",
+            "title": "I",
+            "link": "https://en.wikipedia.org/wiki/Category:Wars_involving_Iran",
+            "list": [
+                "Iran and the Russian invasion of Ukraine.",
+                "Iran crisis of 1946.",
+                "Iran–Iraq War.",
+                "Iran–Israel proxy conflict.",
+                "Iran–PJAK conflict.",
+                "Iran–Saudi Arabia proxy conflict.",
+                "Iran–Israel war.",
+                "Iranian intervention in Iraq (2014–present)"
+            ],
+            "displayed_link": "https://en.wikipedia.org › wiki › Category:Wars_involvi...",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/1d46b5725a75d74c69fe96b7a25d6bf8be44ce079236d96f75c7434509a1df00.png",
+            "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaG8gaGFzIElyYW4gYmVlbiBpbiB3YXIgd2l0aD8iLCJsayI6IkdoMTNhRzhnYUdGeklHbHlZVzRnWW1WbGJpQnBiaUIzWVhJZ2QybDBhQSIsImJzIjoiYzIzT3NRNkNNQlNGNGJoMmNzUWE1TUxzMU1ISmhFVUg0bWhNNTZxVjNvUVUwMElhbjhCWDhERjhRUk9SZ2hEal91VV9oMnhKek5VTmhKR1FHYUZCNkROVVNzSmhEeGZNVllVNlQ0UFhqSVYwN2hxSEZyQm50ZjBTc2lFTHJrcFF3dnJNVVVvTnFNRUpBdzRybFFiM0ZZdG82RHFFX3hESlJtZXNFYkpvZDlyZ2NPYTVaakdOLWpNRHd6RWpPNUp3aFNmMVFkZlNTWE9waTZWUGxhYXJwOEdEczRTQy00Vy0xVGlmbjA3ZSIsImlkIjoiZmNfSC1aWGFNYjBJTENkaGJJUF9vbWt3QTRfMSJ9",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaG8gaGFzIElyYW4gYmVlbiBpbiB3YXIgd2l0aD8iLCJsayI6IkdoMTNhRzhnYUdGeklHbHlZVzRnWW1WbGJpQnBiaUIzWVhJZ2QybDBhQSIsImJzIjoiYzIzT3NRNkNNQlNGNGJoMmNzUWE1TUxzMU1ISmhFVUg0bWhNNTZxVjNvUVUwMElhbjhCWDhERjhRUk9SZ2hEal91VV9oMnhKek5VTmhKR1FHYUZCNkROVVNzSmhEeGZNVllVNlQ0UFhqSVYwN2hxSEZyQm50ZjBTc2lFTHJrcFF3dnJNVVVvTnFNRUpBdzRybFFiM0ZZdG82RHFFX3hESlJtZXNFYkpvZDlyZ2NPYTVaakdOLWpNRHd6RWpPNUp3aFNmMVFkZlNTWE9waTZWUGxhYXJwOEdEczRTQy00Vy0xVGlmbjA3ZSIsImlkIjoiZmNfSC1aWGFNYjBJTENkaGJJUF9vbWt3QTRfMSJ9"
+        },
+        {
+            "question": "Why are Israel and Iran fighting?",
+            "snippet": "Israel sees Iran as an existential threat. Israel has accused Iran of harboring genocidal intentions, while Iran has accused Israel of conducting a genocide in Gaza. Consequently, Israel has sought sanctions and military action against Iran to stop it from acquiring nuclear weapons.",
+            "title": "Iran–Israel proxy conflict - Wikipedia",
+            "link": "https://en.wikipedia.org/wiki/Iran%E2%80%93Israel_proxy_conflict#:~:text=Israel%20sees%20Iran%20as%20an,it%20from%20acquiring%20nuclear%20weapons.",
+            "displayed_link": "https://en.wikipedia.org › wiki › Iran–Israel_proxy_conf...",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/1d46b5725a75d74c69fe96b7a25d6bf89a80b9028b0bde4ce73f8d2a9cc2c768.png",
+            "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaHkgYXJlIElzcmFlbCBhbmQgSXJhbiBmaWdodGluZz8iLCJsayI6IkdoOTNhSGtnYVhNZ2FYTnlZV1ZzSUdGdVpDQnBjbUZ1SUdacFoyaDBhVzVuIiwiYnMiOiJjMjNPc1E2Q01CU0Y0YmgyY3NRYTVNTHMxTUhKaEVVSDRtaE01NnFWM29RVTAwSWFuOEJYOERGOFFST1JnaERqX3VVX2gyeEp6TlVOaEpHUUdhRkI2RE5VU3NKaER4Zk1WWVU2VDRQWGpJVjA3aHFIRnJCbnRmMFNzaUVMcmtwUXd2ck1VVW9OcU1FSkF3NHJsUWIzRll0bzZEcUVfeERKUm1lc0ViSm9kOXJnY09hNVpqR04tak1Ed3pFak81SndoU2YxUWRmU1NYT3BpNlZQbGFhcnA4R0RzNFNDLTRXLTFUaWZuMDdlIiwiaWQiOiJmY19ILVpYYU1iMElMQ2RoYklQX29ta3dBNF8xIn0=",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaHkgYXJlIElzcmFlbCBhbmQgSXJhbiBmaWdodGluZz8iLCJsayI6IkdoOTNhSGtnYVhNZ2FYTnlZV1ZzSUdGdVpDQnBjbUZ1SUdacFoyaDBhVzVuIiwiYnMiOiJjMjNPc1E2Q01CU0Y0YmgyY3NRYTVNTHMxTUhKaEVVSDRtaE01NnFWM29RVTAwSWFuOEJYOERGOFFST1JnaERqX3VVX2gyeEp6TlVOaEpHUUdhRkI2RE5VU3NKaER4Zk1WWVU2VDRQWGpJVjA3aHFIRnJCbnRmMFNzaUVMcmtwUXd2ck1VVW9OcU1FSkF3NHJsUWIzRll0bzZEcUVfeERKUm1lc0ViSm9kOXJnY09hNVpqR04tak1Ed3pFak81SndoU2YxUWRmU1NYT3BpNlZQbGFhcnA4R0RzNFNDLTRXLTFUaWZuMDdlIiwiaWQiOiJmY19ILVpYYU1iMElMQ2RoYklQX29ta3dBNF8xIn0%3D"
+        },
+        {
+            "question": "Which is powerful, Iran or Israel?",
+            "snippet": "Where does Iran stand? On paper, Iran would seem to have an advantage in numbers, with 88 million people and a land area of 1.6 million square kilometers (618,000 square miles) compared to Israel's 9 million people and 22,000 square kilometers (8,500).",
+            "title": "How the militaries of Israel and Iran compare | AP News",
+            "date": "Jun 13, 2025",
+            "link": "https://apnews.com/article/iran-israel-militaries-mideast-us-613e71aff67f6e1701981583bf699bc6#:~:text=Where%20does%20Iran%20stand%3F,22%2C000%20square%20kilometers%20(8%2C500).",
+            "displayed_link": "https://apnews.com › article › iran-israel-militaries-midea...",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/1d46b5725a75d74c69fe96b7a25d6bf8f34cebdd8ccaa82b31f42165722408ce.png",
+            "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaGljaCBpcyBwb3dlcmZ1bCwgSXJhbiBvciBJc3JhZWw/IiwibGsiOiJHaUIzYUdsamFDQnBjeUJ3YjNkbGNtWjFiQ0JwY21GdUlHOXlJR2x6Y21GbGJBIiwiYnMiOiJjMjNPc1E2Q01CU0Y0YmgyY3NRYTVNTHMxTUhKaEVVSDRtaE01NnFWM29RVTAwSWFuOEJYOERGOFFST1JnaERqX3VVX2gyeEp6TlVOaEpHUUdhRkI2RE5VU3NKaER4Zk1WWVU2VDRQWGpJVjA3aHFIRnJCbnRmMFNzaUVMcmtwUXd2ck1VVW9OcU1FSkF3NHJsUWIzRll0bzZEcUVfeERKUm1lc0ViSm9kOXJnY09hNVpqR04tak1Ed3pFak81SndoU2YxUWRmU1NYT3BpNlZQbGFhcnA4R0RzNFNDLTRXLTFUaWZuMDdlIiwiaWQiOiJmY19ILVpYYU1iMElMQ2RoYklQX29ta3dBNF8xIn0=",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUR3QwWDNaR1ExQkthMFpZYlRGWk5XeHBjbWxuTTFjMmNsQXlYMGg2YzFkMFRWSnFPVU4yVTNSVFpVWTFVbmd4U1VJNGVFOUxibEYzV25OclJsVmFNblI0VldaWVJqSnRNbkJhUWtZeVUwWndUVEl4V21wYWNHcFpUVEl0WkZWWmR4SVhTQzFhV0dGTllqQkpURU5rYUdKSlVGOXZiV3QzUVRRYUlrRkdUVUZIUjI5RFgwcEtNMkZITWxsV05VRkpkMGRNU1c1VFJFNXViamxwUzFFIiwiZmN2IjoiMyIsImVpIjoiSC1aWGFNYjBJTENkaGJJUF9vbWt3QTQiLCJxYyI6IkNnaHBjbUZ1SUhkaGNoQUFLQUV4QUFBQVlBNWgyajk5STVVeVB3IiwicXVlc3Rpb24iOiJXaGljaCBpcyBwb3dlcmZ1bCwgSXJhbiBvciBJc3JhZWw%2FIiwibGsiOiJHaUIzYUdsamFDQnBjeUJ3YjNkbGNtWjFiQ0JwY21GdUlHOXlJR2x6Y21GbGJBIiwiYnMiOiJjMjNPc1E2Q01CU0Y0YmgyY3NRYTVNTHMxTUhKaEVVSDRtaE01NnFWM29RVTAwSWFuOEJYOERGOFFST1JnaERqX3VVX2gyeEp6TlVOaEpHUUdhRkI2RE5VU3NKaER4Zk1WWVU2VDRQWGpJVjA3aHFIRnJCbnRmMFNzaUVMcmtwUXd2ck1VVW9OcU1FSkF3NHJsUWIzRll0bzZEcUVfeERKUm1lc0ViSm9kOXJnY09hNVpqR04tak1Ed3pFak81SndoU2YxUWRmU1NYT3BpNlZQbGFhcnA4R0RzNFNDLTRXLTFUaWZuMDdlIiwiaWQiOiJmY19ILVpYYU1iMElMQ2RoYklQX29ta3dBNF8xIn0%3D"
+        }
+    ],
+    "organic_results": [
+        {
+            "position": 1,
+            "title": "US intervenes in Israel-Iran war, strikes Iranian nuclear sites",
+            "link": "https://apnews.com/live/israel-iran-war-updates",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://apnews.com/live/israel-iran-war-updates&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECDkQAQ",
+            "displayed_link": "https://apnews.com › live › israel-iran-war-updates",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21e8a8ae1f8c6c8598c2b8f0ab9216114a.png",
+            "date": "3 hours ago",
+            "snippet": "The Atomic Energy Organization of Iran confirmed that attacks took place on its Fordo, Isfahan and Natanz sites. The UN watchdog said there ...",
+            "snippet_highlighted_words": [
+                "attacks took place on its Fordo, Isfahan and Natanz sites"
+            ],
+            "source": "AP News"
+        },
+        {
+            "position": 2,
+            "title": "Iran-Israel War: Iran Claims It Targeted Ben Gurion Airport ...",
+            "link": "https://www.youtube.com/watch?v=D8AwDw7txq8",
+            "displayed_link": "4 views · 2 hours ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21ef048ca7382d18f85a0108c216b57ac5.jpeg",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21d570aae2ef2b7844f245624420aa7e9b.png",
+            "snippet": "Iran claims it targeted Ben Gurion airport, biological research center #iranisraelwar #iran #israel About Channel: WION The World is One ...",
+            "duration": "5:55",
+            "source": "YouTube · WION"
+        },
+        {
+            "position": 3,
+            "title": "US inserts itself into Israel's war with Iran, strikes 3 Iranian ...",
+            "link": "https://apnews.com/article/israel-iran-war-nuclear-talks-geneva-news-06-21-2025-a7b0cdaba28b5817467ccf712d214579",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://apnews.com/article/israel-iran-war-nuclear-talks-geneva-news-06-21-2025-a7b0cdaba28b5817467ccf712d214579&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECDgQAQ",
+            "displayed_link": "https://apnews.com › article › israel-iran-war-nuclear-tal...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21b4eb2acfabcddacbc964332e10e27bd5.png",
+            "date": "6 hours ago",
+            "snippet": "Iran's top diplomat warned Sunday that the U.S. attacks on its nuclear sites “will have everlasting consequences” and that Tehran “reserves ...",
+            "snippet_highlighted_words": [
+                "Iran's"
+            ],
+            "source": "AP News"
+        },
+        {
+            "position": 4,
+            "title": "US enters Israel's war with Iran after launching strikes | 9 ...",
+            "link": "https://www.youtube.com/watch?v=Fw7OKmoMbt8",
+            "displayed_link": "5K+ views · 2 hours ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21e6eb26678909d4cab04bc0e7e838b8d6.jpeg",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f216a8ebe4feefbc321b32a9d851591488e.png",
+            "snippet": "The United States has officially entered Israel's war with Iran, after launching strikes on three nuclear sites across the country and ...",
+            "duration": "12:00",
+            "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcQgRsZDMu3vZ_EdYwe3HsruxxUsS5jd0kKTQw",
+            "source": "YouTube · 9 News Australia"
+        },
+        {
+            "position": 5,
+            "title": "Iran strikes Israel following US attacks on Iranian nuclear sites",
+            "link": "https://www.cnn.com/2025/06/22/world/video/iran-strikes-israel-after-us-attack-digvid",
+            "displayed_link": "https://www.cnn.com · 4 hours ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21145dac0bc5be78ffdae55693c84425cc.jpeg",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f219f111b27063f3f8a59c3da8bbf8c1542.png",
+            "snippet": "The strikes were the first by Iran since the US announced it had attacked the country's nuclear facilities. 00:49 - Source: CNN. Latest Videos ...",
+            "duration": "0:49",
+            "source": "CNN"
+        },
+        {
+            "position": 6,
+            "title": "How US Airstrikes Created Win-Win Chance For Iran ...",
+            "link": "https://www.ndtv.com/world-news/israel-iran-war-us-strikes-iran-us-airstrikes-donald-trumps-big-bait-to-iran-how-this-move-can-backfire-8730786",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.ndtv.com/world-news/israel-iran-war-us-strikes-iran-us-airstrikes-donald-trumps-big-bait-to-iran-how-this-move-can-backfire-8730786&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFUQAQ",
+            "displayed_link": "https://www.ndtv.com › World News",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21c8ee2c87b8b17d0ce86cc5e07ca57d94.webp",
+            "date": "3 hours ago",
+            "snippet": "The Donald Trump administration struck three nuclear installations in Iran -- Fordow, Natanz, and Esfahan. This is the first time the US has ...",
+            "snippet_highlighted_words": [
+                "three nuclear installations in Iran"
+            ],
+            "source": "NDTV"
+        },
+        {
+            "position": 7,
+            "title": "America's War With Iran",
+            "link": "https://www.foreignaffairs.com/middle-east/americas-war-iran",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.foreignaffairs.com/middle-east/americas-war-iran&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECDwQAQ",
+            "displayed_link": "https://www.foreignaffairs.com › americas-war-iran",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f2146aa5f73c54be427003f4d5feb695d3e.png",
+            "date": "7 hours ago",
+            "snippet": "The United States has attacked Iran. Just days after suggesting he might delay any American military action for weeks, U.S. President Donald ...",
+            "snippet_highlighted_words": [
+                "The United States has attacked Iran"
+            ],
+            "source": "Foreign Affairs"
+        },
+        {
+            "position": 8,
+            "title": "Israel Iran War LIVE: Coverage from Ground Zero as Iran ...",
+            "link": "https://www.youtube.com/watch?v=icQdhu_Wpy4",
+            "displayed_link": "33.2K+ views · 7 minutes ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThFfcdZf9PDPe55lAGraPjqilsqRLGwdQsijncX_xmOaCI&s",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f212dc70a5439131ab75c99840be8ed365f.png",
+            "snippet": "Israel Iran War LIVE: Coverage from Ground Zero as Iran Attacks Tel Aviv | Trump Bombs Iran | N18G Israel and Iran started attacking each ...",
+            "duration": "2:55:56",
+            "source": "YouTube · Firstpost"
+        },
+        {
+            "position": 9,
+            "title": "U.S. strikes 3 nuclear sites in Iran",
+            "link": "https://www.npr.org/2025/06/21/nx-s1-5441127/iran-us-strike-nuclear-trump",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.npr.org/2025/06/21/nx-s1-5441127/iran-us-strike-nuclear-trump&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECDoQAQ",
+            "displayed_link": "https://www.npr.org › iran-us-strike-nuclear-trump",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f210278f98a225f360e23fc399ea6e4d40a.webp",
+            "date": "11 hours ago",
+            "snippet": "The U.S. military has joined with Israel to launch military strikes against Iran, a dramatic escalation in the years-long effort by both ...",
+            "snippet_highlighted_words": [
+                "military strikes against Iran"
+            ],
+            "source": "NPR"
+        },
+        {
+            "position": 10,
+            "title": "Iran–Iraq War",
+            "link": "https://en.wikipedia.org/wiki/Iran%E2%80%93Iraq_War",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://en.wikipedia.org/wiki/Iran%25E2%2580%2593Iraq_War&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFsQAQ",
+            "displayed_link": "https://en.wikipedia.org › wiki › Iran–Iraq_War",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f2168814ff5fff3e774cd96790a5a5732b5.webp",
+            "date": "4 hours ago",
+            "snippet": "The Iran–Iraq War was an armed conflict between Iran and Iraq that lasted from September 1980 to August 1988. Active hostilities began with the Iraqi invasion ...",
+            "snippet_highlighted_words": [
+                "an armed conflict between Iran and Iraq"
+            ],
+            "sitelinks": {
+                "inline": [
+                    {
+                        "title": "International aid to combatants...",
+                        "link": "https://en.wikipedia.org/wiki/International_aid_to_combatants_in_the_Iran%E2%80%93Iraq_War"
+                    },
+                    {
+                        "title": "United States support for Iraq",
+                        "link": "https://en.wikipedia.org/wiki/United_States_support_for_Iraq_during_the_Iran%E2%80%93Iraq_War"
+                    },
+                    {
+                        "title": "Iranian leaders",
+                        "link": "https://en.wikipedia.org/wiki/Iranian_leaders_of_the_Iran%E2%80%93Iraq_War"
+                    }
+                ]
+            },
+            "source": "Wikipedia"
+        },
+        {
+            "position": 11,
+            "title": "The US has entered the Israel-Iran war. Here are 3 ...",
+            "link": "https://theconversation.com/the-us-has-entered-the-israel-iran-war-here-are-3-scenarios-for-what-might-happen-next-259509",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://theconversation.com/the-us-has-entered-the-israel-iran-war-here-are-3-scenarios-for-what-might-happen-next-259509&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFcQAQ",
+            "displayed_link": "https://theconversation.com › the-us-has-entered-the-isr...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21517c67c0f641bd3f18dca076d4e21c6a.png",
+            "date": "5 hours ago",
+            "snippet": "Early Sunday, US warplanes and submarines struck three of Iran's nuclear sites at Natanz, Isfahan and Fordow, where the Iranians have a uranium ...",
+            "snippet_highlighted_words": [
+                "US warplanes and submarines struck three of Iran's nuclear sites"
+            ],
+            "source": "The Conversation"
+        },
+        {
+            "position": 12,
+            "title": "Iran Update Special Report, June 20, 2025, Evening Edition",
+            "link": "https://www.understandingwar.org/backgrounder/iran-update-special-report-june-20-2025-evening-edition",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.understandingwar.org/backgrounder/iran-update-special-report-june-20-2025-evening-edition&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFYQAQ",
+            "displayed_link": "https://www.understandingwar.org › backgrounder › ir...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21961d09e4644eb25ad5367c485a3774e9.png",
+            "date": "1 day ago",
+            "snippet": "Iranian-backed Iraqi militias are attempting to deter US participation in the Israel-Iran War by threatening to expand the conflict. These ...",
+            "snippet_highlighted_words": [
+                "Iran War"
+            ],
+            "source": "Institute for the Study of War"
+        },
+        {
+            "position": 13,
+            "title": "Israel-Iran war enters second week with more strikes as ...",
+            "link": "https://www.cbsnews.com/news/iran-israel-war-middle-east-us-military-gaza/",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.cbsnews.com/news/iran-israel-war-middle-east-us-military-gaza/&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFkQAQ",
+            "displayed_link": "https://www.cbsnews.com › World",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21da96c4bf7e633ae1e639ce46e7dee85e.webp",
+            "date": "10 hours ago",
+            "snippet": "At least 657 people, including 263 civilians, have been killed in Iran and more than 2,000 wounded, according to a Washington-based Iranian ...",
+            "snippet_highlighted_words": [
+                "Iran",
+                "Iranian"
+            ],
+            "source": "CBS News"
+        },
+        {
+            "position": 14,
+            "title": "Iran-Iraq War",
+            "link": "https://www.ebsco.com/research-starters/history/iran-iraq-war",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.ebsco.com/research-starters/history/iran-iraq-war&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECDcQAQ",
+            "displayed_link": "https://www.ebsco.com › research-starters › history › ir...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21bef51b43307b39d7bdc8f09cf4161977.png",
+            "snippet": "The Iran-Iraq War, lasting from 1980 to 1988, was a significant military conflict between the neighboring nations of Iraq and Iran.",
+            "snippet_highlighted_words": [
+                "Iran",
+                "War",
+                "Iran"
+            ],
+            "source": "EBSCO"
+        },
+        {
+            "position": 15,
+            "title": "Lessons from America's First War with Iran",
+            "link": "https://www.brookings.edu/articles/lessons-from-americas-first-war-with-iran/",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.brookings.edu/articles/lessons-from-americas-first-war-with-iran/&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECD8QAQ",
+            "displayed_link": "https://www.brookings.edu › articles › lessons-from-am...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f2157b8f29df4b13447b468dc9a3a9cab06.png",
+            "snippet": "The central lesson of the war in the 1980s is that it is easy to start a conflict with Iran and very difficult to end it.",
+            "snippet_highlighted_words": [
+                "easy to start a conflict with Iran"
+            ],
+            "source": "Brookings"
+        },
+        {
+            "position": 16,
+            "title": "Israel-Iran War LIVE Updates: Can Iran Get Nuclear ...",
+            "link": "https://www.ndtv.com/world-news/israel-iran-attacks-live-updates-us-bombs-donald-trump-nuclear-weapons-sites-deaths-8728636",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.ndtv.com/world-news/israel-iran-attacks-live-updates-us-bombs-donald-trump-nuclear-weapons-sites-deaths-8728636&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECDsQAQ",
+            "displayed_link": "https://www.ndtv.com › World News",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21edd95b868f1f23976a6bd35607d0d353.webp",
+            "date": "5 minutes ago",
+            "snippet": "Iran Israel War LIVE: Iran Claims Its Fired 1,500 Kg Khorramshahr-4 Missile. Iranian state TV aired what appeared a test-firing footage of the ...",
+            "snippet_highlighted_words": [
+                "Iran Claims Its Fired 1,500 Kg Khorramshahr-4 Missile"
+            ],
+            "source": "NDTV"
+        },
+        {
+            "position": 17,
+            "title": "Iran Israel War News LIVE: Iran Hints 'No Radiation Leak' After ...",
+            "link": "https://www.youtube.com/watch?v=-V2qKZY5HWw",
+            "displayed_link": "13K+ views · 8 minutes ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk84luPXEpx-l19djrNiKuOAVj4TRGMkRnQqhU6F9c3prn&s",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f214c376bd4a3cb01981c0eb056ac4c5dd3.png",
+            "snippet": "Iran Israel War News LIVE: Iran Hints 'No Radiation Leak' After US Strikes | Donald Trump News ; US bombs Iran nuclear sites and Tehran warns of ...",
+            "source": "YouTube · India Today"
+        },
+        {
+            "position": 18,
+            "title": "The Deafening Silence of Iran's Proxies",
+            "link": "https://www.understandingwar.org/backgrounder/deafening-silence-iran%E2%80%99s-proxies",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.understandingwar.org/backgrounder/deafening-silence-iran%25E2%2580%2599s-proxies&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECD4QAQ",
+            "displayed_link": "https://www.understandingwar.org › backgrounder › de...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21162f77acd607e8b27748ba1db64e2487.png",
+            "date": "2 days ago",
+            "snippet": "Hamas began this war on October 7, 2023, and embroiled Iran and its proxy and partner militias in a two-year conflict that badly undermined ...",
+            "snippet_highlighted_words": [
+                "Hamas began this war on October 7, 2023"
+            ],
+            "source": "Institute for the Study of War"
+        },
+        {
+            "position": 19,
+            "title": "Democrats are at odds over Israel-Iran war as Trump ...",
+            "link": "https://www.pbs.org/newshour/politics/democrats-are-at-odds-over-israel-iran-war-as-trump-announces-u-s-strikes-on-iran",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.pbs.org/newshour/politics/democrats-are-at-odds-over-israel-iran-war-as-trump-announces-u-s-strikes-on-iran&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECD0QAQ",
+            "displayed_link": "https://www.pbs.org › newshour › politics › democrats-...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21c47411baeae3126b76e20ceaa9168dcb.webp",
+            "date": "8 hours ago",
+            "snippet": "Many prominent Democrats with 2028 presidential aspirations were silent on the Israel-Iran war. “They are sort of hedging their bets,” said Joel ...",
+            "snippet_highlighted_words": [
+                "Iran war"
+            ],
+            "source": "PBS"
+        },
+        {
+            "position": 20,
+            "title": "“They cooked up their own intelligence” Chris Hedges on ...",
+            "link": "https://www.youtube.com/watch?v=a8dzL3biesA",
+            "displayed_link": "258.9K+ views · 4 hours ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRESEEMpA7zRdtPIUrIPV0OY8g0Q67JemAUB0TgND_4ZKuu&s",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21ca8eb61664697a64da41285bbfbed06e.png",
+            "snippet": "The war on Iran feels eerily familiar – from justifications that hold no water to the uncritical reporting in the media.",
+            "duration": "10:45",
+            "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcS2MuKnbMCeQZKcLukq7VCm0iC7ZmLsZyhYWg",
+            "source": "YouTube · Al Jazeera English"
+        },
+        {
+            "position": 21,
+            "title": "Trump announces strikes on three key nuclear sites in Iran",
+            "link": "https://www.msnbc.com/msnbc/watch/maddow-we-are-now-in-war-with-iran-242038853936",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.msnbc.com/msnbc/watch/maddow-we-are-now-in-war-with-iran-242038853936&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFoQAQ",
+            "displayed_link": "https://www.msnbc.com › msnbc › watch › maddow-w...",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f210c1b82a707f34d40647e3dfc1d067019.webp",
+            "date": "10 hours ago",
+            "snippet": "President Donald Trump announced Saturday that U.S. forces dropped bombs on three nuclear sites in Iran, bringing America into the conflict ...",
+            "snippet_highlighted_words": [
+                "U.S. forces dropped bombs on three nuclear sites in Iran"
+            ],
+            "source": "MSNBC News"
+        },
+        {
+            "position": 22,
+            "title": "U.S. Joins War, Destroys Iran's Nuclear Sites — “Fordow is ...",
+            "link": "https://www.youtube.com/watch?v=kYDFw4wUI90",
+            "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.youtube.com/watch%3Fv%3DkYDFw4wUI90&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQFnoECFgQAQ",
+            "displayed_link": "538.8K+ views · 4 hours ago",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21d49c291e1e6bbf892e1637cfe0fe11b4.webp",
+            "snippet": "BREAKING: Israel Hits Iran's Nuclear Sites & Eliminates Top Iranian Commanders | Boots on the Ground · FULL COVERAGE: US strikes Iran nuclear ...",
+            "snippet_highlighted_words": [
+                "Israel Hits Iran's Nuclear Sites"
+            ],
+            "source": "YouTube · TBN Israel"
+        },
+        {
+            "position": 23,
+            "title": "U.S. bombs three Iran nuclear sites, entering war",
+            "link": "https://www.youtube.com/watch?v=jj5nE5w-dc8",
+            "displayed_link": "429.6K+ views · 5 hours ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLoH1LoRZYN1952B-RLHdEIeLE5oTH7T3xoVYxzhHBLet3&s",
+            "favicon": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/bec0a21750bdd2d584f942a440df5f21b2a2002dcfef84461e318ba52688cd8e.png",
+            "snippet": "President Trump announced Saturday that the United States had bombed three Iranian nuclear sites, including the Fordow site that is located ...",
+            "duration": "4:16",
+            "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcQx1aeMjRQslwRPLZjX_jMxZccZZwNeMmSMLQ",
+            "source": "YouTube · KTLA 5"
+        }
+    ],
+    "top_stories": [
+        {
+            "title": "Israel-Iran war live: Trump says key nuclear facilities ‘obliterated’ by US; missiles hit Israel after Iran launches retaliatory strikes",
+            "link": "https://www.theguardian.com/world/live/2025/jun/22/israel-iran-war-live-trump-says-us-has-attacked-nuclear-sites-in-iran-including-fordow",
+            "source": "The Guardian",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c87c798f18ba30d55b7e2a781c4bf6b7eb652711f532b864a3.png",
+            "date": "47 minutes ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c8825639bc682f973ea380fd56fd6b8977.jpeg",
+            "live": true
+        },
+        {
+            "title": "US inserts itself into Israel’s war with Iran, striking 3 Iranian nuclear sites",
+            "link": "https://apnews.com/article/israel-iran-war-nuclear-talks-geneva-news-06-21-2025-a7b0cdaba28b5817467ccf712d214579",
+            "source": "AP News",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c8dc09c8413b5de5d8e45cbb9ed60465e230efa8240bf87219.png",
+            "date": "6 hours ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c808e8d3d4edb4b5b19dd072228e403995.jpeg"
+        },
+        {
+            "title": "Live updates: US intervenes in Israel-Iran war, strikes Iranian nuclear sites",
+            "link": "https://apnews.com/live/israel-iran-war-updates",
+            "source": "AP News",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c89963be20ce99e202917ba7b392600f8a2087872e773b8dea.png",
+            "date": "22 minutes ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c8a9f12159e4ea14e842837997d7764bfa.jpeg",
+            "live": true
+        },
+        {
+            "title": "Israel-Iran War LIVE Updates: Can Iran Get Nuclear Warheads After US Attack? What Putin Aide Said",
+            "link": "https://www.ndtv.com/world-news/israel-iran-attacks-live-updates-us-bombs-donald-trump-nuclear-weapons-sites-deaths-8728636",
+            "source": "NDTV",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c83632f6f88484382a078aef3d08b1fbc42de798c1c14f8f37.png",
+            "date": "5 minutes ago",
+            "thumbnail": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c838b601ca1ee09810f44fc5fc6738d16b.jpeg",
+            "live": true
+        },
+        {
+            "title": "What we know about US strikes on Iran's nuclear facilities",
+            "link": "https://www.bbc.co.uk/news/articles/cvg9r4q99g4o",
+            "source": "BBC",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c8af838c8465c10d9975642c78089aca660faa49949cc3772e.png",
+            "date": "44 minutes ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBLNjFTjMcuRFrsqUUuPr7VxCxnTLXztdkc31cFjpa40bHmTbZ_a4qLYk&usqp=CAI&s"
+        },
+        {
+            "title": "What we know about the three Iranian nuclear sites struck by the US",
+            "link": "https://www.cnn.com/2025/06/21/middleeast/iran-nuclear-sites-hit-us-explainer-intl-hnk",
+            "source": "CNN",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c826361104878fb30fa1acec3ec56893749a797e64c7373ac6.png",
+            "date": "5 hours ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpmkyGii3D9yTqFh1PywQUa6UhR_2vtRO5kv1HueJ_pCYQcP6nvG8p9_U&usqp=CAI&s"
+        },
+        {
+            "title": "What to Know as the U.S. Enters Israel’s War Against Iran",
+            "link": "https://www.nytimes.com/2025/06/12/world/middleeast/israel-iran-strikes.html",
+            "source": "The New York Times",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c824efe55e948c26e2aebcbc95b7beaee7767479faf591cca8.png",
+            "date": "55 minutes ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGdsCWh458JuOuW6kRaSwGFRlwjC1P5psb3XtQzst0iEUqTH-dinY5Gvs&usqp=CAI&s"
+        },
+        {
+            "title": "What is Iran’s Fordow nuclear site and why did Israel want a US strike?",
+            "link": "https://www.theguardian.com/world/2025/jun/22/what-is-irans-fordow-nuclear-site-and-why-was-a-us-strike-needed",
+            "source": "The Guardian",
+            "source_logo": "https://serpapi.com/searches/6857e61f8681807f2673d8c6/images/73c5fdf4c91598c82569ed7f3c2c7bcaf7564f558ef10b743a5e9c5197d79ddc.png",
+            "date": "3 hours ago",
+            "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQTtc4WV40xXeiESBThatUvjRlyFreiavHNGeoYF063AwHmS0QlJ87_J0&usqp=CAI&s"
+        }
+    ],
+    "top_stories_link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Iran+War&tbm=nws&source=univ&tbo=u&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQt8YBKAF6BAgSEAM",
+    "top_stories_serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&tbm=nws",
+    "related_searches": [
+        {
+            "block_position": 1,
+            "query": "Israel to iran war",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Israel+to+iran+war&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAh3EAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Israel+to+iran+war"
+        },
+        {
+            "block_position": 1,
+            "query": "War on iran news",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=War+on+iran+news&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhxEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=War+on+iran+news"
+        },
+        {
+            "block_position": 1,
+            "query": "US-Iran war",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=US-Iran+war&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhvEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=US-Iran+war"
+        },
+        {
+            "block_position": 1,
+            "query": "Iran war Reddit",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Iran+war+Reddit&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhuEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+war+Reddit"
+        },
+        {
+            "block_position": 1,
+            "query": "Israel Iran war who is winning",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Israel+Iran+war+who+is+winning&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhrEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Israel+Iran+war+who+is+winning"
+        },
+        {
+            "block_position": 1,
+            "query": "U.S.--Iran War wiki",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=U.S.--Iran+War+wiki&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhhEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=U.S.--Iran+War+wiki"
+        },
+        {
+            "block_position": 1,
+            "query": "Iran war wikipedia",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Iran+war+wikipedia&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhcEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+war+wikipedia"
+        },
+        {
+            "block_position": 1,
+            "query": "Iran News",
+            "link": "https://www.google.com/search?num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&q=Iran+News&sa=X&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ1QJ6BAhUEAE",
+            "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+News"
+        }
+    ],
+    "pagination": {
+        "current": 1,
+        "next": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=25&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8NMDegQIChAW",
+        "other_pages": {
+            "2": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=25&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAE",
+            "3": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=50&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAG",
+            "4": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=75&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAI",
+            "5": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=100&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAK",
+            "6": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=125&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAM",
+            "7": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=150&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAO",
+            "8": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=175&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAQ",
+            "9": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=200&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAS",
+            "10": "https://www.google.com/search?q=Iran+War&num=25&sca_esv=66ed4dad37329696&gl=us&hl=en&ei=H-ZXaMb0ILCdhbIP_omkwA4&start=225&sa=N&filter=0&sstk=Ac65TH4NsMhF4p9tPwwUYmYf8dcfMQzOtfzN_vmjmQbcs_P3BbMMUuO3htoek8B-jMOBSEXo2wX5RwVlFNR416AaBMJL6HmI2gtoJg&ved=2ahUKEwiGgJvZ84SOAxWwTkEAHf4ECegQ8tMDegQIChAU"
+        }
+    },
+    "serpapi_pagination": {
+        "current": 1,
+        "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=25",
+        "next": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=25",
+        "other_pages": {
+            "2": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=25",
+            "3": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=50",
+            "4": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=75",
+            "5": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=100",
+            "6": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=125",
+            "7": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=150",
+            "8": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=175",
+            "9": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=200",
+            "10": "https://serpapi.com/search.json?device=desktop&engine=google&filter=0&gl=us&google_domain=google.com&hl=en&location=United+States&num=25&q=Iran+War&start=225"
+        }
+    }
+}
