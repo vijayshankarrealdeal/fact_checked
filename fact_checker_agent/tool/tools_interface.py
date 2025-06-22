@@ -1,3 +1,5 @@
+# fact_checker_agent/tool/tools_interface.py
+
 from typing import Any, List, Dict
 from fact_checker_agent.models.search_helper_models import Payload
 from fact_checker_agent.tool.llm_calls import generate_bulk_ytd_summary
@@ -31,7 +33,7 @@ async def summarize_web_pages(urls: List[Payload]) -> Payload:
             if len(content_summary) > 4500:
                 i['content_summary'] = content_summary[:1500] + "..."
 
-    return scraped_data[:6]
+    return scraped_data[:2]
 
 
 def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> List[Payload]:
@@ -52,12 +54,12 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> List[Pa
     urls_to_process = short_urls[:MAX_VIDEOS_TO_PROCESS]
 
     # Call the new bulk processing function
-    summaries = generate_bulk_ytd_summary(query, urls_to_process)
+    summaries = generate_bulk_ytd_summary(urls_to_process)
 
     print(
         f"--- Finished. Successfully generated {len(summaries)} summaries from the bulk call. ---"
     )
-    return summaries[:6]
+    return summaries[:2]
 
 
 def search_the_web_and_youtube(query: str) -> Dict[str, Any]:

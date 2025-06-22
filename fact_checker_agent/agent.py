@@ -1,6 +1,7 @@
 # fact_checker_agent/agent.py
-from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent
 
+
+from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent
 from fact_checker_agent.tool.tools_interface import search_the_web_and_youtube, summarize_web_pages, summarize_youtube_videos_in_bulk
 from fact_checker_agent.models.agent_output_models import FactCheckResult
 
