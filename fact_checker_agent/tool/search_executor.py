@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 from fact_checker_agent.models.search_helper_models import BasePayload, PageContent
 from utils import sanitize_text
@@ -43,15 +44,19 @@ class SearchExecutor:
         """Initializes and returns a stealth-configured Chrome WebDriver."""
         options = webdriver.ChromeOptions()
         
-        # --- THE FIX: Explicitly set the browser's binary location ---
-        # We installed 'chromium-browser', so we must tell Selenium where it is.
+        # --- THE FIX: Explicitly set BOTH the driver and browser binary location ---
+        # The path for the driver installed via `apt-get install chromium-chromedriver`
+        chromedriver_path = "/usr/bin/chromedriver"
+        service = ChromeService(executable_path=chromedriver_path)
+        
+        # The path for the browser installed via `apt-get install chromium-browser`
         options.binary_location = "/usr/bin/chromium-browser"
         
         # --- A comprehensive set of arguments for stability on a Linux Server VM ---
         options.add_argument("--headless=new")
-        options.add_argument("--no-sandbox") # Most important for server environments
-        options.add_argument("--disable-dev-shm-usage") # Overcomes limited resource issues
-        options.add_argument("--disable-gpu") # Essential for servers without a GPU
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-setuid-sandbox")
         options.add_argument("--disable-infobars")
@@ -62,8 +67,8 @@ class SearchExecutor:
         options.add_argument("--lang=en-US")
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
         
-        # This initialization is now complete and robust for a server environment.
-        driver = webdriver.Chrome(options=options)
+        # Initialize the driver with the explicit service and options
+        driver = webdriver.Chrome(service=service, options=options)
         return driver
 
     def run_search(self, search_term: str, scroll_count: int = 3, scroll_pause: float = 0.5) -> str:
