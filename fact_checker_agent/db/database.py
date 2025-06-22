@@ -49,11 +49,12 @@ async def get_session_history_async(session_id: str, user_id: str):
     """Asynchronously retrieves chat history."""
     session = await get_session(session_id, user_id)
     history = []
-    if session and session.messages:
-        for msg in session.messages:
-            role = "user" if msg.role == "user" else "assistant"
-            if msg.parts and hasattr(msg.parts[0], "text"):
-                history.append({"role": role, "content": msg.parts[0].text})
+    if session and session.state:
+        for _ in session.state:
+            history.append({
+                "user": session.state['search_query'],
+                "ai_response":session.state['final_fact_check_result']
+            })
     return history
 
 # --- START: THE FINAL FIX IS HERE ---

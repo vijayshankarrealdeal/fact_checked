@@ -1,17 +1,12 @@
 # Core application and web framework
-streamlit
+fastapi
+uvicorn
+pydantic
 python-dotenv
-selenium
-# Google Cloud & AI Services
 google-genai
 google-adk
-serpapi
-
-# Data Scraping and Parsing
 beautifulsoup4
-yt-dlp
-# selenium  <-- See WARNING below
-
+gunicorn
 # Database Driver (can be removed if using the line above)
 psycopg2-binary
 lxml

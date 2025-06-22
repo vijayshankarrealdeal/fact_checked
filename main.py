@@ -1,8 +1,9 @@
 # main.py
 
 from fastapi import FastAPI, HTTPException, Request
+
 from pydantic import BaseModel, Field
-from typing import List, Optional, Any
+from typing import List, Optional
 from contextlib import asynccontextmanager
 import datetime
 
@@ -12,7 +13,7 @@ from google.genai import types
 # Import your business logic and data layer
 from fact_checker_agent.agent import root_agent
 from fact_checker_agent.db import database
-from fact_checker_agent.models.agent_output_models import FactCheckResult
+from fact_checker_agent.models.agent_output_models import FactCheckResult, SessionHistoryResponse
 
 # --- FastAPI Lifespan Management ---
 @asynccontextmanager
@@ -34,6 +35,7 @@ app = FastAPI(
     version="1.5.0", # Version bumped to reflect the final fix
     lifespan=lifespan
 )
+
 
 # --- Pydantic Models for API (Unchanged) ---
 class QueryRequest(BaseModel):
@@ -59,15 +61,15 @@ class SessionInfo(BaseModel):
 class ListSessionsResponse(BaseModel):
     sessions: List[SessionInfo]
 
-class ChatMessage(BaseModel):
-    role: str
-    content: Any
 
-class SessionHistoryResponse(BaseModel):
-    session_id: str
-    history: List[ChatMessage]
+
+
+
 
 # --- API Endpoints ---
+
+
+
 
 @app.post(
     "/query",
@@ -86,7 +88,7 @@ async def query_agent(request: Request, payload: QueryRequest):
     try:
         # This call now uses the robust existence check.
         await database.ensure_session_exists_async(
-            session_id=payload.session_id,
+            session_id=payload.query,
             user_id=payload.user_id
         )
 

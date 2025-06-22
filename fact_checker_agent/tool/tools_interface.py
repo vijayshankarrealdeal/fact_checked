@@ -1,4 +1,3 @@
-import time  # <-- Import the time module
 from typing import Any, List, Dict
 from fact_checker_agent.models.search_helper_models import Payload
 from fact_checker_agent.tool.llm_calls import generate_bulk_ytd_summary
@@ -6,12 +5,7 @@ from fact_checker_agent.tool.search_executor import SearchExecutor
 from fact_checker_agent.tool.url_executor import extract_external_links_info
 from utils import is_duration_within_limit
 
-# --- START: THE FIX ---
-# Drastically reduce the number of items to process to avoid rate limits
-MAX_VIDEOS_TO_PROCESS = 1
-MAX_WEB_PAGES_TO_PROCESS = 2  # Limit total pages to scrape
-WEB_SUMMARY_BATCH_SIZE = 2  # Summarize the 2 pages in one go
-# --- END: THE FIX ---
+
 
 
 async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
@@ -23,12 +17,9 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
     if not urls:
         return {"content": "No web pages to summarize.", "sources": []}
 
-    # Limit the number of URLs to process to avoid long runtimes
-    urls_to_process = urls[:MAX_WEB_PAGES_TO_PROCESS]
-    print(f"--- Limiting processing to the first {len(urls_to_process)} URLs. ---")
 
     # 1. Scrape content from all pages concurrently
-    scraped_data = await extract_external_links_info(urls_to_process)
+    scraped_data = await extract_external_links_info(urls)
 
     # Filter out pages where scraping failed
     valid_pages = [
@@ -47,11 +38,11 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
         f"--- Successfully scraped content from {len(valid_pages)} pages. Now summarizing in batches. ---"
     )
     page_contents = [
-        page.model_dump() for page in valid_pages if len(page["content_summary"]) > 1000
+        page for page in valid_pages if len(page["content_summary"]) > 1000
     ]
     combined_summary_text = ""
     for i in page_contents:
-        i["content_summary"] = i["content_summary"][:1500]
+        i["content_summary"] = i["content_summary"][:900]
         combined_summary_text += (
             f"--- Summary for {i['title']} ---\n{i['content_summary']}\n"
         )
@@ -77,8 +68,7 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> Dict[st
     all_urls = [
         url
         for url in urls
-        if isinstance(url, dict)
-        and url.get("duration")
+        if url.get("duration")
         and "youtube" in url.get("link", "")
     ]
     # Filter for videos under the duration limit
@@ -92,10 +82,7 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> Dict[st
             "content": "No suitable YouTube videos found within the 6-minute duration limit.",
             "sources": [],
         }
-
-    # Take up to the max number of videos for our API calls
-    urls_to_process = short_urls_payloads[:MAX_VIDEOS_TO_PROCESS]
-    links_to_process = [p["link"] for p in urls_to_process]
+    links_to_process = [p["link"] for p in short_urls_payloads]
 
     # --- START: THE FIX ---
     # The llm_calls function now handles the delay, but we confirm we only send a small number
@@ -114,10 +101,9 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> Dict[st
     for summary_payload in summaries_payloads:
         if isinstance(summary_payload, Payload):
             link = summary_payload.link
-            title = summary_payload.title
             summary = summary_payload.content_summary
             final_analysis_parts.append(
-                f"Source: {title} ({link})\nSummary: {summary}\n"
+                f"Source: ({link})\nSummary: {summary}\n"
             )
             final_source_urls.append(link)
 

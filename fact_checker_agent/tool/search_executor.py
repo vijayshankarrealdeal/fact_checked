@@ -2,7 +2,7 @@
 
 
 from serpapi import GoogleSearch
-# import json
+import json
 from fact_checker_agent.models.search_helper_models import Payload
 from dotenv import load_dotenv
 import os
@@ -48,24 +48,24 @@ class SearchExecutor:
             "hl": "en",
             "tbm": "vid",
         }
-        search = GoogleSearch(simple_params)
-        results_common = search.get_dict()
-        # with open("fact_checker_agent/tool/test_common.json", "r") as file:
-        #     results_common = json.load(file)
+        # search = GoogleSearch(simple_params)
+        # results_common = search.get_dict()
+        with open("fact_checker_agent/tool/test_common.json", "r") as file:
+            results_common = json.load(file)
         organic_results = [Payload(**item) for item in results_common.get("organic_results", [])]
         top_results = [Payload(**item) for item in results_common.get("top_stories", [])]
         organic_results.extend(top_results)
 
-        # with open("fact_checker_agent/tool/test_payload_news.json", "r") as file:
-        #     results_news = json.load(file)
-        search = GoogleSearch(news_params)
-        results_news = search.get_dict()
+        with open("fact_checker_agent/tool/test_payload_news.json", "r") as file:
+            results_news = json.load(file)
+        # search = GoogleSearch(news_params)
+        # results_news = search.get_dict()
         news_results = [Payload(**item) for item in results_news.get("news_results", [])]
 
-        # with open("fact_checker_agent/tool/video_payload.json", "r") as file:
-        #     results_video = json.load(file)
-        search = GoogleSearch(video_params)
-        results_video = search.get_dict()
+        with open("fact_checker_agent/tool/video_payload.json", "r") as file:
+            results_video = json.load(file)
+        # search = GoogleSearch(video_params)
+        # results_video = search.get_dict()
         video_results_from_file = [Payload(**item) for item in results_video.get("video_results", [])]
         
         web_pages = list()

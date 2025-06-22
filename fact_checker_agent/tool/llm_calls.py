@@ -1,10 +1,9 @@
 
-import time
 from typing import List
 from google import genai
 from google.genai.types import HttpOptions
 from google.genai import types
-from fact_checker_agent.db.llm_version import FLASH_MODEL
+from fact_checker_agent.db.llm_version import PRO_MODEL
 
 
 
@@ -26,8 +25,8 @@ def generate_bulk_ytd_summary(urls: List[str]) -> List[str]:
     print(f"  -> Starting sequential summarization for {len(urls)} videos.")
     responses = []
     client = genai.Client(http_options=HttpOptions(api_version="v1"))
-    for i in urls:
-        model = FLASH_MODEL
+    for i in urls[:2]:
+        model = PRO_MODEL
         contents = [
             types.Content(
                 role="user",
@@ -58,5 +57,4 @@ def generate_bulk_ytd_summary(urls: List[str]) -> List[str]:
             config=generate_content_config,
         )
         responses.append(resp.text)
-        time.sleep(2)
     return responses

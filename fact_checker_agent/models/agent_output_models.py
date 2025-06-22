@@ -26,3 +26,11 @@ class FactCheckResult(BaseModel):
         ge=0, # Must be greater than or equal to 0
         le=100 # Must be less than or equal to 100
     )
+
+class ChatMessage(BaseModel):
+    user: str
+    ai_response: FactCheckResult
+
+class SessionHistoryResponse(BaseModel):
+    session_id: str
+    history: List[ChatMessage]

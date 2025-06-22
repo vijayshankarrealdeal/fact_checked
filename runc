@@ -5,10 +5,18 @@ gcloud run deploy factchecked \
   --image gcr.io/blissful-mile-461403-i2/factchecked \
   --platform managed \
   --region us-central1 \
-  --allow-unauthenticated \
-  --add-cloudsql-instances=blissful-mile-461403-i2:us-central1:xchecked \
-  --set-env-vars="INSTANCE_CONNECTION_NAME=blissful-mile-461403-i2:us-central1:xchecked" \
-  --set-env-vars="POSTGRES_USER=postgres" \
-  --set-env-vars="POSTGRES_PASSWORD=google99" \
-  --set-env-vars="POSTGRES_DB=postgres"
+  --allow-unauthenticated 
+  # --add-cloudsql-instances=blissful-mile-461403-i2:us-central1:xchecked \
+  # --set-env-vars="INSTANCE_CONNECTION_NAME=blissful-mile-461403-i2:us-central1:xchecked" \
+  # --set-env-vars="POSTGRES_USER=postgres" \
+  # --set-env-vars="POSTGRES_PASSWORD=google99" \
+  # --set-env-vars="POSTGRES_DB=postgres"
 
+# The complete deployment command
+gcloud run deploy factchecked \
+  --image gcr.io/blissful-mile-461403-i2/factchecked \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --remove-secrets="POSTGRES_PASSWORD,GOOGLE_SEARCH_APIS_KEY" \
+  --set-env-vars="GOOGLE_CLOUD_PROJECT=blissful-mile-461403-i2,GOOGLE_CLOUD_LOCATION=global,GOOGLE_GENAI_USE_VERTEXAI=True,POSTGRES_USER=postgres,POSTGRES_PASSWORD=google99,POSTGRES_NAME=postgres,POSTGRES_HOST=34.60.85.117,GOOGLE_SEARCH_APIS_KEY=7b1cd00ef895ee1cf56bdf235b7237431ebb91906aa73ea4a5d2ed178cbdfe94"
