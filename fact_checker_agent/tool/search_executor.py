@@ -54,7 +54,7 @@ class SearchExecutor:
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
         
         # This specifies the path inside the Docker container
-        service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver')
+        service = webdriver.ChromeService()
         driver = webdriver.Chrome(service=service, options=options)
         return driver
 
