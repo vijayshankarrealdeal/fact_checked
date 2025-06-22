@@ -42,15 +42,23 @@ class SearchExecutor:
     def get_driver():
         """Initializes and returns a stealth-configured Chrome WebDriver."""
         options = webdriver.ChromeOptions()
+        # --- A comprehensive set of arguments for stability on a Linux Server VM ---
         options.add_argument("--headless=new")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox") # Most important for server environments
+        options.add_argument("--disable-dev-shm-usage") # Overcomes limited resource issues
+        options.add_argument("--disable-gpu") # Essential for servers without a GPU
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-setuid-sandbox")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument("--remote-debugging-port=9222")
         options.add_argument("--window-size=1920,1080")
         options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36')
         options.add_argument("--lang=en-US")
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
         
+        # This simplified initialization is more robust.
+        # It relies on the system PATH to find the 'chromedriver' installed by `apt-get`.
         driver = webdriver.Chrome(options=options)
         return driver
 
@@ -67,7 +75,6 @@ class SearchExecutor:
             print(f"Navigated to Google Search for: {search_term}")
             
             # --- Page 1 ---
-            # Wait for the first page of results to be present before proceeding
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.g"))
             )
@@ -75,25 +82,21 @@ class SearchExecutor:
             print("Scrolling down page 1 to load all results...")
             for _ in range(scroll_count):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(scroll_pause) # A small sleep is okay for scrolling action
+                time.sleep(scroll_pause)
             all_html.append(driver.page_source)
             print("Captured HTML from page 1.")
 
             # --- Page 2 Navigation ---
             print("Attempting to navigate to page 2...")
             try:
-                # FIX: Use `By.LINK_TEXT` to find the "Next" button, as seen in your screenshot.
-                # Also, wait for the element to be clickable to avoid race conditions.
                 next_button = WebDriverWait(driver, 5).until(
                     EC.element_to_be_clickable((By.LINK_TEXT, "Next"))
                 )
                 
-                # Scroll to the button to make sure it's in view
                 driver.execute_script("arguments[0].scrollIntoView();", next_button)
                 next_button.click()
                 print("  - Success! Navigated to next page.")
                 
-                # Wait for the second page of results to load
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, "div.g"))
                 )
