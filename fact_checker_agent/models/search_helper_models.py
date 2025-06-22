@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 class Payload(BaseModel):
-    position: int = Field(..., description="Position of the search result in the list.")
     link: str = Field(..., description="URL of the search result.")
     title: str = Field(..., description="Title of the search result.")
-    source: Optional[str] = Field(..., description="Source of the search result.")
+    position: Optional[int] = Field(None, description="Position of the search result in the list.")
+    source: Optional[str] = Field(None, description="Source of the search result.")
     date: Optional[str] = Field(None, description="Date of the search result.")
     snippet: Optional[str] = Field(None, description="Snippet of the search result.")
     duration: Optional[str] = Field(None, description="Duration of the video.")

@@ -8,7 +8,7 @@ from utils import is_duration_within_limit
 MAX_VIDEOS_TO_PROCESS = 5
 
 
-async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
+async def summarize_web_pages(urls: List[Payload]) -> Payload:
     """
     Asynchronously scrapes the content from a list of web URLs and compiles them.
 
@@ -25,13 +25,13 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
     # This function now receives a list of Payload objects and passes it along.
     scraped_data = await extract_external_links_info(urls)
 
-    # Process the returned list of BasePayload objects
-    full_content = "\n\n".join(
-        f"--- Content from {item.url} ---\n{item.content_summary[:4000] if item.content_summary else 'No summary available.'}"
-        for item in scraped_data
-    )
-    sources = [item.link for item in scraped_data]
-    return {"content": full_content, "sources": sources}
+    for i in scraped_data:
+        content_summary = i.get('content_summary', None)
+        if content_summary:
+            if len(content_summary) > 4500:
+                i['content_summary'] = content_summary[:1500] + "..."
+
+    return scraped_data[:6]
 
 
 def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> List[Payload]:
@@ -42,8 +42,8 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> List[Pa
     print(f"--- TOOL: Summarizing YouTube videos. Received {len(urls)} URLs. ---")
     if not urls:
         return []
-
-    short_urls = [url for url in urls if is_duration_within_limit(url.duration, 6)]
+    all_urls = [url for url in urls if (url.get('duration', None) and 'youtube' in url.get('link'))]
+    short_urls = [url for url in all_urls if is_duration_within_limit(url['duration'], 6)]
     if not short_urls:
         print("No videos found within the 6-minute duration limit.")
         return []
@@ -57,7 +57,7 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> List[Pa
     print(
         f"--- Finished. Successfully generated {len(summaries)} summaries from the bulk call. ---"
     )
-    return summaries
+    return summaries[:6]
 
 
 def search_the_web_and_youtube(query: str) -> Dict[str, Any]:

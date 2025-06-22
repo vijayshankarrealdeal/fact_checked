@@ -51,7 +51,7 @@ Each object must strictly follow the provided schema and include:
         # Add each video file to the parts list
         for url in urls:
             user_prompt_parts.append(
-                types.Part(file_data=types.FileData(file_uri=url.link, mime_type="video/*"))
+                types.Part(file_data=types.FileData(file_uri=url.get('link'), mime_type="video/*"))
             )
 
         # 2. Define the expected response schema as a LIST of Payloads
@@ -74,7 +74,7 @@ Each object must strictly follow the provided schema and include:
             contents=contents,
             config=generate_content_config,
         )
-        print(f"  <- Received bulk summary response from Gemini.")
+        print("  <- Received bulk summary response from Gemini.")
 
         # The response.text will be a JSON string of a list of objects.
         # We need to parse it and convert it into a list of Payload objects.

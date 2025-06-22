@@ -34,7 +34,10 @@ def close_all_drivers(pool: dict):
 
 def extract_page_info(url_data: Payload) -> Payload:
     # THIS IS THE KEY FIX: Expect a dictionary and extract the url string from it.
-    url_string = url_data.link
+    url_string = url_data.get('link',None)
+    if not url_string:
+        print(f"Invalid URL data: {url_data}. Skipping extraction.")
+        return url_data
     driver = get_pooled_driver()
     summary = ""
     try:
@@ -45,7 +48,8 @@ def extract_page_info(url_data: Payload) -> Payload:
         print(summary)
         driver.quit()
         setattr(thread_local, 'driver', None)
-    url_data.content_summary = summary
+    url_data['title'] = url_data.get('title',None)
+    url_data['content_summary'] = summary
     return url_data
 
 

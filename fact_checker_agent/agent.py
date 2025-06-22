@@ -47,7 +47,7 @@ info_gatherer_agent = LlmAgent(
 # ==============================================================================
 web_summarizer_agent = LlmAgent(
     name="WebSummarizerAgent",
-    model=PRO_MODEL,
+    model=FLASH_MODEL,
     instruction="""
     You are a web content analyst. Your first step is to get the full content of the provided web URLs.
     1. Call the `summarize_web_pages` tool with the list of web URLs from the `gathered_urls` state.
