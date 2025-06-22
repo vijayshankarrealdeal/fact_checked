@@ -41,9 +41,7 @@ def search_youtube_urls_by_duration(
         "geo_bypass": True,
         "skip_download": True,
         "noplaylist": True,
-        # Add the headers to the request options
         "http_headers": headers,
-        # Force the IPv4 protocol. Sometimes cloud providers have issues with IPv6.
         "source_address": "0.0.0.0",
     }
 

@@ -1,11 +1,13 @@
-# engine/tools/search_executor.py
+# fact_checker_agent/tool/search_executor.py
 
 import time
 from urllib.parse import urlparse, parse_qs
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 from fact_checker_agent.models.search_helper_models import BasePayload, PageContent
 from utils import sanitize_text
@@ -29,33 +31,37 @@ class SearchExecutor:
         combined_html = self.run_search(query)
 
         if not combined_html:
-            return [], PageContent(full_text="", images=[])
+            return [], PageContent(full_text="")
 
         urls_with_details, page_text = self.extract_from_webpage(combined_html)
-        return urls_with_details, PageContent(full_text=page_text, images=[])
+        return urls_with_details, PageContent(full_text=page_text)
 
     @staticmethod
     def get_driver():
         """Initializes and returns a stealth-configured Chrome WebDriver."""
         options = webdriver.ChromeOptions()
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option("useAutomationExtension", False)
-        # For CI/CD environments, uncomment the following lines:
-        # options.add_argument("--headless=new")
-        # options.add_argument("--no-sandbox")
-        # options.add_argument("--disable-dev-shm-usage")
-        # options.add_argument("--window-size=1920,1080")
-        driver = webdriver.Chrome(options=options)
-        driver.execute_script(
-            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
-        )
+        # FIX 1: Use the modern headless mode which is less detectable
+        options.add_argument("--headless=new")
+        # Standard arguments to make it look more like a real browser
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+        # FIX 2: Set a realistic User-Agent string
+        options.add_argument('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36')
+        # FIX 3: Set language to avoid being flagged as a bot
+        options.add_argument("--lang=en-US")
+        options.add_experimental_option('excludeSwitches', ['enable-automation'])
+        
+        # This specifies the path inside the Docker container
+        service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver')
+        driver = webdriver.Chrome(service=service, options=options)
         return driver
 
-    def run_search(self, search_term: str, scroll_count: int = 4, scroll_pause: float = 1.0) -> str:
+    def run_search(self, search_term: str, scroll_count: int = 3, scroll_pause: float = 0.5) -> str:
         """
-        Performs a Google search, scrolls down, navigates to page 2 using a robust
-        multi-selector strategy, and returns the combined HTML source.
+        Performs a Google search, scrolls down, and navigates to page 2 using a robust
+        multi-selector strategy with explicit waits.
         """
         driver = self.get_driver()
         all_html = []
@@ -64,47 +70,45 @@ class SearchExecutor:
             url = f"https://www.google.com/search?q={search_term}&hl=en"
             driver.get(url)
             print(f"Navigated to Google Search for: {search_term}")
-            time.sleep(1) # Wait for initial load
+
+            # FIX 4: Use WebDriverWait for more reliable loading
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, GOOGLE_RESULT_SELECTORS[1]))
+            )
+            
             print("Scrolling down page 1 to load all results...")
-            for i in range(scroll_count):
+            for _ in range(scroll_count):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(scroll_pause)
             all_html.append(driver.page_source)
             print("Captured HTML from page 1.")
 
-            # --- Page 2 Navigation (with fallback selectors) ---
-            navigated_to_page_2 = False
-            pagination_selectors = [
-                'a[aria-label="Next page"]',  # Primary method
-                'a[aria-label="Page 2"]'     # Fallback method, as suggested
-            ]
-
+            # --- Page 2 Navigation (with fallback selectors and explicit wait) ---
             print("Attempting to navigate to page 2...")
-            for i, selector in enumerate(pagination_selectors):
-                try:
-                    print(f"  - Trying selector #{i+1}: {selector}")
-                    next_button = driver.find_element(By.CSS_SELECTOR, selector)
-                    # Scroll button into view to ensure it's clickable
-                    driver.execute_script("arguments[0].scrollIntoView(true);", next_button)
-                    time.sleep(0.5)
-                    next_button.click()
-                    print("  - Success! Navigated to next page.")
-                    navigated_to_page_2 = True
-                    break  # Exit the loop on the first success
-                except NoSuchElementException:
-                    print("  - Selector not found. Trying next one.")
-                    continue  # Try the next selector
-
-            if navigated_to_page_2:
-                time.sleep(1.5) # Wait for page 2 to load
+            try:
+                # Use a more generic selector for the pagination area
+                pagination_area = WebDriverWait(driver, 5).until(
+                    EC.presence_of_element_located((By.ID, "pnnext"))
+                )
+                pagination_area.click()
+                print("  - Success! Navigated to next page.")
+                
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, GOOGLE_RESULT_SELECTORS[1]))
+                )
                 print("Scrolling down page 2 to load all results...")
-                for i in range(scroll_count):
+                for _ in range(scroll_count):
                     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                     time.sleep(scroll_pause)
                 all_html.append(driver.page_source)
                 print("Captured HTML from page 2.")
-            else:
-                print("Could not find any pagination buttons. Only one page of results may exist.")
+
+            except (NoSuchElementException, TimeoutException):
+                print("Could not find pagination buttons. Only one page of results may exist.")
+                # For debugging headless issues, uncomment these lines:
+                # driver.save_screenshot('headless_debug.png')
+                # with open('headless_debug.html', 'w', encoding='utf-8') as f:
+                #     f.write(driver.page_source)
 
         except Exception as e:
             print(f"An error occurred during search execution: {e}")
@@ -135,7 +139,6 @@ class SearchExecutor:
         for result in search_results_container:
             title_tag = result.find('h3')
             link_tag = result.find('a')
-            # Broader search for the snippet
             snippet_tag = result.find('div', {'style': 'display: -webkit-box'}) or result.find(attrs={"data-sncf": "2"})
 
             if not (title_tag and link_tag and link_tag.get('href')):
