@@ -12,6 +12,8 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from fact_checker_agent.models.search_helper_models import BasePayload, PageContent
 from utils import sanitize_text
 
+# A list of potential CSS selectors for Google search result containers.
+# The script will try these in order.
 GOOGLE_RESULT_SELECTORS = [
     "div.g",
     "div.MjjYud",
@@ -49,11 +51,6 @@ class SearchExecutor:
         options.add_argument("--lang=en-US")
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
         
-        # --- THE FIX ---
-        # We no longer need to specify the Service path.
-        # Since 'chromium-driver' is installed system-wide in the Docker container,
-        # Selenium's manager should now be able to find it automatically.
-        # This is a more robust approach.
         driver = webdriver.Chrome(options=options)
         return driver
 
@@ -69,29 +66,36 @@ class SearchExecutor:
             driver.get(url)
             print(f"Navigated to Google Search for: {search_term}")
             
-            # Use a very basic wait to ensure the page body has loaded.
+            # --- Page 1 ---
+            # Wait for the first page of results to be present before proceeding
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.g"))
             )
             
             print("Scrolling down page 1 to load all results...")
             for _ in range(scroll_count):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(scroll_pause)
+                time.sleep(scroll_pause) # A small sleep is okay for scrolling action
             all_html.append(driver.page_source)
             print("Captured HTML from page 1.")
 
+            # --- Page 2 Navigation ---
             print("Attempting to navigate to page 2...")
             try:
-                # Use a reliable ID for the 'Next' button link
-                pagination_link = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.ID, "pnnext"))
+                # FIX: Use `By.LINK_TEXT` to find the "Next" button, as seen in your screenshot.
+                # Also, wait for the element to be clickable to avoid race conditions.
+                next_button = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable((By.LINK_TEXT, "Next"))
                 )
-                pagination_link.click()
+                
+                # Scroll to the button to make sure it's in view
+                driver.execute_script("arguments[0].scrollIntoView();", next_button)
+                next_button.click()
                 print("  - Success! Navigated to next page.")
                 
+                # Wait for the second page of results to load
                 WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.TAG_NAME, "body"))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.g"))
                 )
                 
                 print("Scrolling down page 2 to load all results...")
@@ -102,7 +106,7 @@ class SearchExecutor:
                 print("Captured HTML from page 2.")
 
             except (NoSuchElementException, TimeoutException):
-                print("Could not find pagination buttons. Only one page of results may exist.")
+                print("Could not find 'Next' button. Only one page of results may exist.")
                 
         except Exception as e:
             print(f"An error occurred during search execution: {e}")
@@ -123,7 +127,7 @@ class SearchExecutor:
         for selector in GOOGLE_RESULT_SELECTORS:
             search_results_container = soup.select(selector)
             if search_results_container:
-                # print(f"Found {len(search_results_container)} results using selector '{selector}'.")
+                print(f"Found {len(search_results_container)} results using selector '{selector}'.")
                 break
         
         if not search_results_container:
