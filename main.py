@@ -1,7 +1,7 @@
 # main.py
 
 from fastapi import FastAPI, HTTPException, Request
-
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from contextlib import asynccontextmanager
@@ -34,6 +34,14 @@ app = FastAPI(
     description="An API for running the Fact Checker agent pipeline.",
     version="1.5.0", # Version bumped to reflect the final fix
     lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 
