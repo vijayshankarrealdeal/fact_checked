@@ -8,13 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- Database Configuration (Unchanged) ---
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-DB_NAME = os.getenv("POSTGRES_NAME")
-DB_HOST = os.getenv("POSTGRES_HOST")
-DB_PORT = 5432
 
-DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+DB_URL = os.getenv("DATABASE_URL")
 
 # --- Session Service Initialization (Unchanged) ---
 session_service = DatabaseSessionService(db_url=DB_URL)

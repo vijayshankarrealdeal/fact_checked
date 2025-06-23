@@ -9,13 +9,13 @@ services:
       # to the directory inside the container where PostgreSQL stores its data.
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=fastapi_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=google99
+      - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d fastapi_db"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -27,7 +27,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://user:password@db/fastapi_db
+      - DATABASE_URL=postgresql://postgres:google99@db/postgres
     depends_on:
       db:
         condition: service_healthy
