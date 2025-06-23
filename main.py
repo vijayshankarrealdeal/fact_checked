@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fact Checked API",
     description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
-    version="3.5.5",  # Version bumped for asyncio.run fix
+    version="3.5.6",  # Version bumped for another asyncio.run fix
     lifespan=lifespan,
 )
 app.add_middleware(
@@ -339,10 +339,7 @@ async def get_query_result(session_id: str, user_id: str):
 async def get_all_user_sessions(user_id: str):
     log_info(logger, f"API: Fetching all sessions for user '{user_id}'")
     try:
-        # --- START: THE FIX ---
-        # Directly await the async function instead of using a sync wrapper that calls asyncio.run()
         sessions_list = await database.get_all_sessions_for_user_async(user_id)
-        # --- END: THE FIX ---
         session_infos = [
             SessionInfo(
                 id=s.id,
@@ -357,7 +354,7 @@ async def get_all_user_sessions(user_id: str):
                     else None
                 ),
             )
-            for s in sessions_list  # Iterate over the direct list of Session objects
+            for s in sessions_list
         ]
         return ListSessionsResponse(sessions=session_infos)
     except Exception as e:
@@ -399,12 +396,14 @@ async def delete_all_user_sessions(user_id: str):
 async def load_session_summary(session_id: str, user_id: str):
     log_info(logger, f"API: Loading summary for session: {session_id}, user: {user_id}")
     try:
-        summary_data = database.get_session_summary_sync(
-            session_id, user_id
-        )  # This sync wrapper is fine if it's not in a tight loop
+        # --- START: THE FIX ---
+        # Directly await the async function
+        summary_data = await database.get_session_summary_async(session_id, user_id)
+        # --- END: THE FIX ---
         if not summary_data:
             log_warning(
-                logger, f"Session summary not found or not completed for {session_id}"
+                logger,
+                f"Session summary not found or session not completed for {session_id}",
             )
             raise HTTPException(
                 status_code=404,
@@ -435,12 +434,9 @@ async def get_session_event_history(session_id: str, user_id: str):
         f"API: Fetching full event history for session: {session_id}, user: {user_id}",
     )
     try:
-        # --- START: THE FIX ---
-        # Directly await the async function
         history_events = await database.get_full_session_event_history_async(
             session_id, user_id
         )
-        # --- END: THE FIX ---
         if not history_events and not await database.get_session(session_id, user_id):
             log_warning(
                 logger,
