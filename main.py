@@ -24,7 +24,7 @@ from fact_checker_agent.models.agent_output_models import (
     QuerySubmitResponse,
     ResultResponse,
     SessionSummaryResponse,
-    FullEventHistoryResponse,  # Added FullEventHistoryResponse
+    FullEventHistoryResponse,
 )
 from fact_checker_agent.logger import (
     get_logger,
@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fact Checked API",
     description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
-    version="3.5.4",  # Version bumped for full event history
+    version="3.5.5",  # Version bumped for asyncio.run fix
     lifespan=lifespan,
 )
 app.add_middleware(
@@ -61,7 +61,6 @@ app.add_middleware(
 )
 
 
-# --- Models --- (from previous section, ensure QueryRequest, SessionInfo, ListSessionsResponse, DeleteResponse are defined)
 class QueryRequest(BaseModel):
     user_id: str
     query: str
@@ -81,9 +80,6 @@ class ListSessionsResponse(BaseModel):
 class DeleteResponse(BaseModel):
     message: str
     deleted_count: int
-
-
-# --- End Models ---
 
 
 async def run_agent_in_background(
@@ -293,7 +289,6 @@ async def run_agent_in_background(
         )
 
 
-# --- API Endpoints ---
 @app.post(
     "/query", response_model=QuerySubmitResponse, status_code=status.HTTP_202_ACCEPTED
 )
@@ -301,7 +296,7 @@ async def submit_query(
     request: Request, payload: QueryRequest, background_tasks: BackgroundTasks
 ):
     log_info(logger, f"API: Job accepted for session '{payload.session_id}'")
-    session_service_instance = request.app.state.session_service  # Renamed for clarity
+    session_service_instance = request.app.state.session_service
     app_name = request.app.state.app_name
     await database.ensure_session_exists_async(
         session_id=payload.session_id, user_id=payload.user_id, query=payload.query
@@ -344,9 +339,10 @@ async def get_query_result(session_id: str, user_id: str):
 async def get_all_user_sessions(user_id: str):
     log_info(logger, f"API: Fetching all sessions for user '{user_id}'")
     try:
-        sessions_response = database.list_sessions_sync(
-            user_id
-        )  # This now calls get_all_sessions_for_user_async
+        # --- START: THE FIX ---
+        # Directly await the async function instead of using a sync wrapper that calls asyncio.run()
+        sessions_list = await database.get_all_sessions_for_user_async(user_id)
+        # --- END: THE FIX ---
         session_infos = [
             SessionInfo(
                 id=s.id,
@@ -361,11 +357,7 @@ async def get_all_user_sessions(user_id: str):
                     else None
                 ),
             )
-            for s in (
-                sessions_response.sessions
-                if sessions_response and hasattr(sessions_response, "sessions")
-                else []
-            )
+            for s in sessions_list  # Iterate over the direct list of Session objects
         ]
         return ListSessionsResponse(sessions=session_infos)
     except Exception as e:
@@ -407,7 +399,9 @@ async def delete_all_user_sessions(user_id: str):
 async def load_session_summary(session_id: str, user_id: str):
     log_info(logger, f"API: Loading summary for session: {session_id}, user: {user_id}")
     try:
-        summary_data = database.get_session_summary_sync(session_id, user_id)
+        summary_data = database.get_session_summary_sync(
+            session_id, user_id
+        )  # This sync wrapper is fine if it's not in a tight loop
         if not summary_data:
             log_warning(
                 logger, f"Session summary not found or not completed for {session_id}"
@@ -430,13 +424,10 @@ async def load_session_summary(session_id: str, user_id: str):
         )
 
 
-# --- START: NEW ENDPOINT FOR FULL EVENT HISTORY ---
 @app.get(
     "/session/events/{session_id}",
     response_model=FullEventHistoryResponse,
-    summary="Get Full Event History for a Session",
-    description="Retrieves all events (user messages, agent responses, tool calls) for a specific session, ordered chronologically.",
-    responses={404: {"model": Dict[str, str]}, 500: {"model": Dict[str, str]}},
+    summary="Get Full Event History",
 )
 async def get_session_event_history(session_id: str, user_id: str):
     log_info(
@@ -444,20 +435,18 @@ async def get_session_event_history(session_id: str, user_id: str):
         f"API: Fetching full event history for session: {session_id}, user: {user_id}",
     )
     try:
-        # Use the synchronous wrapper for simplicity in the endpoint
-        history_events = database.get_full_session_event_history_sync(
+        # --- START: THE FIX ---
+        # Directly await the async function
+        history_events = await database.get_full_session_event_history_async(
             session_id, user_id
         )
-
-        if not history_events and not await database.get_session(
-            session_id, user_id
-        ):  # Check if session exists at all
+        # --- END: THE FIX ---
+        if not history_events and not await database.get_session(session_id, user_id):
             log_warning(
                 logger,
                 f"No session found for session_id: {session_id}, user_id: {user_id}",
             )
             raise HTTPException(status_code=404, detail="Session not found.")
-
         return FullEventHistoryResponse(
             session_id=session_id, user_id=user_id, history=history_events
         )
@@ -472,6 +461,3 @@ async def get_session_event_history(session_id: str, user_id: str):
         raise HTTPException(
             status_code=500, detail=f"Could not load event history: {e}"
         )
-
-
-# --- END: NEW ENDPOINT ---
