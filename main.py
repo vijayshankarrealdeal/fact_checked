@@ -65,7 +65,9 @@ async def run_agent_in_background(session_service: DatabaseSessionService, user_
     try:
         # Step 1: Refine Query
         await database.update_session_state(session_id, user_id, {"status": "REFINING_QUERY"})
-        query_runner = Runner(agent=query_processor_agent, session_service=session_service)
+        query_runner = Runner(
+            app_name="FactCheckerADK",
+            agent=query_processor_agent, session_service=session_service)
         async for event in query_runner.run_async(session_id=session_id, user_id=user_id, new_message=types.Content(role="user", parts=[types.Part(text=initial_query)])):
             if event.is_final_response():
                 state["search_query"] = event.content.parts[0].text
@@ -74,7 +76,9 @@ async def run_agent_in_background(session_service: DatabaseSessionService, user_
 
         # Step 2: Gather Sources
         await database.update_session_state(session_id, user_id, {"status": "GATHERING_SOURCES"})
-        gatherer_runner = Runner(agent=info_gatherer_agent, session_service=session_service)
+        gatherer_runner = Runner(
+            app_name="FactCheckerADK",
+            agent=info_gatherer_agent, session_service=session_service)
         async for event in gatherer_runner.run_async(session_id=session_id, user_id=user_id, state=state):
             if event.is_final_response():
                 state.update(event.output)
@@ -83,7 +87,9 @@ async def run_agent_in_background(session_service: DatabaseSessionService, user_
 
         # Step 3: Analyze Content (Web & Video)
         await database.update_session_state(session_id, user_id, {"status": "ANALYZING_CONTENT"})
-        summarizer_runner = Runner(agent=parallel_summarizer, session_service=session_service)
+        summarizer_runner = Runner(
+            app_name="FactCheckerADK",
+            agent=parallel_summarizer, session_service=session_service)
         async for event in summarizer_runner.run_async(session_id=session_id, user_id=user_id, state=state):
             if event.is_final_response():
                  state.update(event.output)
@@ -92,7 +98,9 @@ async def run_agent_in_background(session_service: DatabaseSessionService, user_
 
         # Step 4: Generate Final Verdict
         await database.update_session_state(session_id, user_id, {"status": "GENERATING_VERDICT"})
-        ranker_runner = Runner(agent=fact_ranker_agent, session_service=session_service)
+        ranker_runner = Runner(
+            app_name="FactCheckerADK",
+            agent=fact_ranker_agent, session_service=session_service)
         async for event in ranker_runner.run_async(session_id=session_id, user_id=user_id, state=state):
             if event.is_final_response():
                 result = FactCheckResult.model_validate_json(event.content.parts[0].text)
