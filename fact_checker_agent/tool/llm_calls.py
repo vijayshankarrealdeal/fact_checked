@@ -95,7 +95,7 @@ def generate_bulk_ytd_summary(urls: List[str]) -> List[str]:
     log_info(logger, f"-> Starting PARALLEL summarization for {len(urls)} videos.")
     if len(urls) > 4:
         log_warning(logger, f"Limiting video summarization from {len(urls)} to 2 URLs to manage costs/time.")
-        urls = urls[:2]
+        urls = urls[:4]
 
     client = genai.Client(http_options=HttpOptions(api_version="v1"))
     
