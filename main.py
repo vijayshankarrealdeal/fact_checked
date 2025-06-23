@@ -9,25 +9,28 @@ import datetime
 
 from google.adk.runners import Runner
 from google.genai import types
+from google.adk.sessions import DatabaseSessionService
 
-from fact_checker_agent.agent import root_agent
+# Import the individual agents we will orchestrate manually
+from fact_checker_agent.agent import query_processor_agent, info_gatherer_agent, parallel_summarizer, fact_ranker_agent
 from fact_checker_agent.db import database
 from fact_checker_agent.models.agent_output_models import FactCheckResult, QuerySubmitResponse, ResultResponse
-from fact_checker_agent.logger import get_logger, log_info, log_error, log_success, BColors
+from fact_checker_agent.logger import get_logger, log_info, log_error, log_success
 
 logger = get_logger("FactCheckerAPI")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    log_info(logger, "--- Initializing ADK Runner ---")
-    app.state.runner = Runner(agent=root_agent, app_name="FactCheckerADK", session_service=database.session_service)
+    log_info(logger, "--- Initializing ADK Session Service ---")
+    # The runner is no longer needed at the app level, but the session_service is.
+    app.state.session_service = database.session_service
     yield
     log_info(logger, "--- Application Shutting Down ---")
 
 app = FastAPI(
     title="Fact Checked API",
     description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
-    version="3.2.0", # Version bumped for architecture fix
+    version="3.3.0", # Version bumped for correct orchestration
     lifespan=lifespan
 )
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
@@ -50,66 +53,69 @@ class DeleteResponse(BaseModel):
     message: str
     deleted_count: int
 
-# --- START: THE MAIN FIX ---
-# This dictionary maps the agent starting its turn to the status of the overall process.
-AGENT_STATUS_MAP = {
-    "QueryProcessorAgent": "REFINING_QUERY",
-    "InfoGathererAgent": "GATHERING_SOURCES",
-    "WebSummarizerAgent": "ANALYZING_CONTENT", # Part of ParallelSummarizer
-    "VideoSummarizerAgent": "ANALYZING_CONTENT", # Part of ParallelSummarizer
-    "FactRankerAgent": "GENERATING_VERDICT",
-}
-
-async def run_agent_in_background(runner: Runner, user_id: str, session_id: str, initial_query: str):
+# --- START: THE CORRECTED BACKGROUND ORCHESTRATOR ---
+async def run_agent_in_background(session_service: DatabaseSessionService, user_id: str, session_id: str, initial_query: str):
     """
-    Runs the full agent pipeline and updates the DB status by monitoring the
-    event stream for changes in the active agent.
+    Runs the agent pipeline step-by-step using a new Runner for each step,
+    updating the session status in the DB between each step. This prevents stale session errors.
     """
-    log_info(logger, f"BACKGROUND: Starting full pipeline for session {session_id}")
-    current_status = ""
+    log_info(logger, f"BACKGROUND: Starting orchestrated pipeline for session {session_id}")
+    state: Dict[str, Any] = {"search_query": initial_query}
 
     try:
-        # Run the entire root_agent pipeline. Do NOT specify individual agents.
-        async for event in runner.run_async(
-            session_id=session_id,
-            user_id=user_id,
-            new_message=types.Content(role="user", parts=[types.Part(text=initial_query)])
-        ):
-            new_status = AGENT_STATUS_MAP.get(event.author)
+        # Step 1: Refine Query
+        await database.update_session_state(session_id, user_id, {"status": "REFINING_QUERY"})
+        query_runner = Runner(agent=query_processor_agent, session_service=session_service)
+        async for event in query_runner.run_async(session_id=session_id, user_id=user_id, new_message=types.Content(role="user", parts=[types.Part(text=initial_query)])):
+            if event.is_final_response():
+                state["search_query"] = event.content.parts[0].text
+        await database.update_session_state(session_id, user_id, {"search_query": state["search_query"]})
+        log_success(logger, f"BACKGROUND [{session_id}]: Query refined to '{state['search_query']}'")
 
-            # If the status has changed, update the database.
-            if new_status and new_status != current_status:
-                current_status = new_status
-                await database.update_session_state(session_id, user_id, {"status": current_status})
-                log_success(logger, f"BACKGROUND [{session_id}]: Status changed to {current_status}")
+        # Step 2: Gather Sources
+        await database.update_session_state(session_id, user_id, {"status": "GATHERING_SOURCES"})
+        gatherer_runner = Runner(agent=info_gatherer_agent, session_service=session_service)
+        async for event in gatherer_runner.run_async(session_id=session_id, user_id=user_id, state=state):
+            if event.is_final_response():
+                state.update(event.output)
+        await database.update_session_state(session_id, user_id, {"gathered_urls": state["gathered_urls"]})
+        log_success(logger, f"BACKGROUND [{session_id}]: Sources gathered.")
 
-            # When the final agent is done, save the result.
-            if event.is_final_response() and event.author == "FactRankerAgent":
-                log_success(logger, f"BACKGROUND [{session_id}]: Final response received.")
-                if event.content and event.content.parts and event.content.parts[0].text:
-                    result = FactCheckResult.model_validate_json(event.content.parts[0].text)
-                    await database.update_session_state(session_id, user_id, {
-                        "status": "COMPLETED",
-                        "final_fact_check_result": result.model_dump()
-                    })
-                    log_success(logger, f"BACKGROUND: Successfully completed and stored result for session {session_id}.")
-                    return # Exit the function successfully
+        # Step 3: Analyze Content (Web & Video)
+        await database.update_session_state(session_id, user_id, {"status": "ANALYZING_CONTENT"})
+        summarizer_runner = Runner(agent=parallel_summarizer, session_service=session_service)
+        async for event in summarizer_runner.run_async(session_id=session_id, user_id=user_id, state=state):
+            if event.is_final_response():
+                 state.update(event.output)
+        await database.update_session_state(session_id, user_id, {"web_analysis": state.get("web_analysis"), "video_analysis": state.get("video_analysis")})
+        log_success(logger, f"BACKGROUND [{session_id}]: Content analysis complete.")
 
-        # If the loop finishes without a final response from the last agent
-        raise Exception("Agent pipeline finished unexpectedly without a final verdict.")
+        # Step 4: Generate Final Verdict
+        await database.update_session_state(session_id, user_id, {"status": "GENERATING_VERDICT"})
+        ranker_runner = Runner(agent=fact_ranker_agent, session_service=session_service)
+        async for event in ranker_runner.run_async(session_id=session_id, user_id=user_id, state=state):
+            if event.is_final_response():
+                result = FactCheckResult.model_validate_json(event.content.parts[0].text)
+                state["final_fact_check_result"] = result.model_dump()
+        log_success(logger, f"BACKGROUND [{session_id}]: Final verdict generated.")
+
+        # Step 5: Complete
+        await database.update_session_state(session_id, user_id, {"status": "COMPLETED", "final_fact_check_result": state["final_fact_check_result"]})
+        log_success(logger, f"BACKGROUND: Successfully completed and stored result for session {session_id}.")
 
     except Exception as e:
         log_error(logger, f"BACKGROUND [{session_id}]: Pipeline failed. Error: {e}", exc_info=True)
         await database.update_session_state(session_id, user_id, {"status": "FAILED", "error_message": str(e)})
-# --- END: THE MAIN FIX ---
+# --- END: THE CORRECTED BACKGROUND ORCHESTRATOR ---
 
 # --- API Endpoints ---
 @app.post("/query", response_model=QuerySubmitResponse, status_code=status.HTTP_202_ACCEPTED)
 async def submit_query(request: Request, payload: QueryRequest, background_tasks: BackgroundTasks):
     log_info(logger, f"API: Job accepted for session '{payload.session_id}'")
-    runner = request.app.state.runner
+    # We now pass the session_service to the background task, not a pre-configured runner.
+    session_service = request.app.state.session_service
     await database.ensure_session_exists_async(session_id=payload.session_id, user_id=payload.user_id, query=payload.query)
-    background_tasks.add_task(run_agent_in_background, runner, payload.user_id, payload.session_id, payload.query)
+    background_tasks.add_task(run_agent_in_background, session_service, payload.user_id, payload.session_id, payload.query)
     return QuerySubmitResponse(message="Fact-check job accepted. Poll the status endpoint for results.", session_id=payload.session_id, status_endpoint=f"/query/result/{payload.session_id}?user_id={payload.user_id}")
 
 @app.get("/query/result/{session_id}", response_model=ResultResponse)
