@@ -6,9 +6,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=google99
+      - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
     healthcheck:
@@ -27,7 +27,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+      - DATABASE_URL=postgresql://postgres:google99@db/postgres
     depends_on:
       db:
         condition: service_healthy
