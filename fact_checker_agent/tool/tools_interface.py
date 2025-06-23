@@ -68,7 +68,7 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
     source_links = []
     for page in valid_pages:
         # Truncate each individual article to a reasonable length to avoid overwhelming the context
-        truncated_content = page.get("content_summary", "")[:400]
+        truncated_content = page.get("content_summary", "")[:700]
         context_block += f"--- Source: {page.get('title')} ({page.get('link')}) ---\n"
         context_block += f"{truncated_content}\n\n"
         source_links.append(page.get("link"))

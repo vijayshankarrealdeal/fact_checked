@@ -3,12 +3,11 @@
 import os
 import asyncio
 from typing import Dict, Any, List
-from sqlalchemy import delete
+from sqlalchemy import delete, asc # Added asc for ordering
 from google.adk.sessions import DatabaseSessionService, Session
-# --- START: THE FIX ---
-# The StorageSession class is located in the database_session_service module, not a 'database' module.
-from google.adk.sessions.database_session_service import StorageSession
-# --- END: THE FIX ---
+from google.adk.sessions.database_session_service import StorageSession, StorageEvent # Added StorageEvent
+from google.adk.events.event import Event # For type hinting and potential conversion
+from google.adk.sessions import _session_util # For decoding content
 from dotenv import load_dotenv
 from fact_checker_agent.logger import get_logger, log_info, log_success, log_warning, log_error
 
@@ -45,7 +44,6 @@ async def update_session_state(session_id: str, user_id: str, new_state_values: 
 async def ensure_session_exists_async(session_id: str, user_id: str, query: str):
     log_info(logger, f"DB: Ensuring session '{session_id}' exists for user '{user_id}'.")
     existing_session = await get_session(session_id, user_id)
-
     if existing_session is None:
         log_warning(logger, f"DB: Session '{session_id}' not found. Creating it now.")
         initial_state = {
@@ -63,33 +61,30 @@ async def ensure_session_exists_async(session_id: str, user_id: str, query: str)
             with session_service.database_session_factory() as db_session:
                 storage_session = db_session.get(StorageSession, (APP_NAME, user_id, session_id))
                 if storage_session:
-                    storage_session.state["status"] = "ACCEPTED"
-                    storage_session.state["original_query"] = query
-                    storage_session.state["final_fact_check_result"] = None
-                    storage_session.state["gathered_urls"] = {}
-                    storage_session.state["web_analysis"] = ""
-                    storage_session.state["video_analysis"] = ""
+                    current_state = dict(storage_session.state)
+                    current_state.update({
+                        "status": "ACCEPTED", "original_query": query,
+                        "final_fact_check_result": None, "search_query": "",
+                        "gathered_urls": {}, "web_analysis": "", "video_analysis": ""
+                    })
+                    storage_session.state = current_state
                     db_session.commit()
                     log_success(logger, f"DB: Successfully reset session '{session_id}'.")
         except Exception as e:
             log_error(logger, f"DB: Failed to reset session {session_id}. Error: {e}")
 
-
 async def get_all_sessions_for_user_async(user_id: str) -> List[Session]:
-    """Fetches all sessions associated with a specific user ID."""
     log_info(logger, f"DB: Fetching all sessions for user_id: {user_id}")
     response = await session_service.list_sessions(app_name=APP_NAME, user_id=user_id)
     log_success(logger, f"DB: Found {len(response.sessions)} sessions for user {user_id}.")
     return response.sessions
 
 async def delete_all_sessions_for_user_async(user_id: str) -> int:
-    """Deletes all sessions for a user and returns the count of deleted rows."""
     log_info(logger, f"DB: Deleting all sessions for user_id: {user_id}")
     try:
         with session_service.database_session_factory() as db_session:
             stmt = delete(StorageSession).where(
-                StorageSession.app_name == APP_NAME,
-                StorageSession.user_id == user_id
+                StorageSession.app_name == APP_NAME, StorageSession.user_id == user_id
             )
             result = db_session.execute(stmt)
             db_session.commit()
@@ -100,20 +95,86 @@ async def delete_all_sessions_for_user_async(user_id: str) -> int:
         log_error(logger, f"DB: Failed to delete sessions for user {user_id}. Error: {e}")
         return 0
 
-async def get_session_history_async(session_id: str, user_id: str):
-    log_info(logger, f"DB: Retrieving session history for session_id: {session_id}")
+async def get_session_summary_async(session_id: str, user_id: str) -> List[Dict[str, Any]]:
+    log_info(logger, f"DB: Retrieving summary for session_id: {session_id}")
     session = await get_session(session_id, user_id)
+    summary_pair = []
+    if session and session.state:
+        status = session.state.get("status")
+        original_query = session.state.get("original_query")
+        final_result = session.state.get("final_fact_check_result")
+        if status == "COMPLETED" and original_query and final_result:
+            summary_pair.append({"user_query": original_query, "ai_fact_check_result": final_result})
+            log_success(logger, f"DB: Found completed summary for session_id: {session_id}")
+        elif status != "COMPLETED": log_warning(logger, f"DB: Session {session_id} not completed. Status: {status}")
+        else: log_warning(logger, f"DB: Could not retrieve full summary for {session_id}.")
+    return summary_pair
+
+def get_session_summary_sync(session_id: str, user_id: str) -> List[Dict[str, Any]]:
+    return asyncio.run(get_session_summary_async(session_id, user_id))
+
+# --- START: NEW FUNCTION FOR FULL EVENT HISTORY ---
+async def get_full_session_event_history_async(session_id: str, user_id: str) -> List[Dict[str, Any]]:
+    """
+    Fetches all raw events for a given session, ordered by timestamp.
+    Formats them into a more frontend-friendly structure.
+    """
+    log_info(logger, f"DB: Fetching full event history for session_id: {session_id}, user_id: {user_id}")
     history = []
-    if session and session.state and session.state.get("final_fact_check_result"):
-         history.append({
-            "user": session.state.get('original_query'),
-            "ai_response":session.state.get('final_fact_check_result')
-        })
-    log_success(logger, f"DB: Found {len(history)} entries in history for session_id: {session_id}")
+    try:
+        with session_service.database_session_factory() as db_session:
+            storage_events = (
+                db_session.query(StorageEvent)
+                .filter(
+                    StorageEvent.app_name == APP_NAME,
+                    StorageEvent.user_id == user_id,
+                    StorageEvent.session_id == session_id,
+                )
+                .order_by(asc(StorageEvent.timestamp)) # Order chronologically
+                .all()
+            )
+            if not storage_events:
+                log_warning(logger, f"DB: No events found for session {session_id}")
+                return []
+
+            for event_db in storage_events:
+                # Convert ADK Content object to a simpler dict for JSON serialization
+                content_simple = None
+                if event_db.content:
+                    try:
+                        # ADK's _session_util.decode_content expects the raw DB value
+                        decoded_content_obj = _session_util.decode_content(event_db.content)
+                        if decoded_content_obj and decoded_content_obj.parts:
+                            content_simple = [part.text for part in decoded_content_obj.parts if part.text]
+                            # If only one part, just return the text, otherwise list of texts
+                            if len(content_simple) == 1:
+                                content_simple = content_simple[0]
+                            elif not content_simple: # Handle cases where parts might not have text
+                                content_simple = "[Non-text content]"
+                        else:
+                             content_simple = "[Empty or non-standard content]"
+                    except Exception as e:
+                        log_warning(logger, f"DB: Could not decode content for event {event_db.id}: {e}")
+                        content_simple = "[Content decoding error]"
+                
+                history_entry = {
+                    "event_id": event_db.id,
+                    "author": event_db.author,
+                    "timestamp": event_db.timestamp.isoformat() if event_db.timestamp else None,
+                    "content": content_simple,
+                    "error_code": event_db.error_code,
+                    "error_message": event_db.error_message,
+                    # Add other fields if needed by the frontend, e.g., event_db.branch
+                }
+                history.append(history_entry)
+            log_success(logger, f"DB: Retrieved {len(history)} events for session {session_id}")
+    except Exception as e:
+        log_error(logger, f"DB: Error fetching event history for session {session_id}: {e}")
     return history
 
-def get_session_history_sync(session_id: str, user_id: str):
-    return asyncio.run(get_session_history_async(session_id, user_id))
+def get_full_session_event_history_sync(session_id: str, user_id: str) -> List[Dict[str, Any]]:
+    return asyncio.run(get_full_session_event_history_async(session_id, user_id))
+# --- END: NEW FUNCTION ---
 
 def list_sessions_sync(user_id: str):
-    return asyncio.run(list_sessions(user_id))
+    return asyncio.run(get_all_sessions_for_user_async(user_id))

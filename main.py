@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 from contextlib import asynccontextmanager
 import datetime
-import json  # For safely parsing JSON strings
+import json
 
 from google.adk.runners import Runner
 from google.genai import types
@@ -23,8 +23,16 @@ from fact_checker_agent.models.agent_output_models import (
     FactCheckResult,
     QuerySubmitResponse,
     ResultResponse,
+    SessionSummaryResponse,
+    FullEventHistoryResponse,  # Added FullEventHistoryResponse
 )
-from fact_checker_agent.logger import get_logger, log_info, log_error, log_success, log_warning
+from fact_checker_agent.logger import (
+    get_logger,
+    log_info,
+    log_error,
+    log_success,
+    log_warning,
+)
 
 logger = get_logger("FactCheckerAPI")
 
@@ -41,7 +49,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fact Checked API",
     description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
-    version="3.5.1",  # Version bumped for string handling fix
+    version="3.5.4",  # Version bumped for full event history
     lifespan=lifespan,
 )
 app.add_middleware(
@@ -53,11 +61,11 @@ app.add_middleware(
 )
 
 
-# --- Models --- (Unchanged)
+# --- Models --- (from previous section, ensure QueryRequest, SessionInfo, ListSessionsResponse, DeleteResponse are defined)
 class QueryRequest(BaseModel):
-    user_id: str = Field(..., example="flutter_user_123")
-    query: str = Field(..., example="Iran and US military conflict")
-    session_id: str = Field(..., example="sess_abc123")
+    user_id: str
+    query: str
+    session_id: str
 
 
 class SessionInfo(BaseModel):
@@ -85,12 +93,12 @@ async def run_agent_in_background(
     session_id: str,
     initial_query: str,
 ):
+    # This function is unchanged from version 3.5.2
+    # ... (content of run_agent_in_background from version 3.5.2) ...
     log_info(
         logger, f"BACKGROUND: Starting orchestrated pipeline for session {session_id}"
     )
-
     try:
-        # Step 1: Refine Query
         await database.update_session_state(
             session_id, user_id, {"status": "REFINING_QUERY"}
         )
@@ -115,8 +123,6 @@ async def run_agent_in_background(
         log_success(
             logger, f"BACKGROUND [{session_id}]: Query refined to '{refined_query}'"
         )
-
-        # Step 2: Gather Sources
         await database.update_session_state(
             session_id, user_id, {"status": "GATHERING_SOURCES"}
         )
@@ -125,54 +131,58 @@ async def run_agent_in_background(
             session_service=session_service,
             app_name=app_name,
         )
-        async for _ in gatherer_runner.run_async(
+        raw_text_output_from_gatherer = ""
+        async for event in gatherer_runner.run_async(
             session_id=session_id,
             user_id=user_id,
             new_message=types.Content(
                 role="user", parts=[types.Part(text="trigger gatherer")]
             ),
         ):
-            pass
-
-        updated_session = await database.get_session(session_id, user_id)
-        gathered_urls_raw = (
-            updated_session.state.get("gathered_urls") if updated_session else None
-        )
-
-        # --- START: THE FIX ---
+            if event.is_final_response() and event.content and event.content.parts:
+                raw_text_output_from_gatherer = event.content.parts[0].text
         gathered_urls_data = {}
-        if isinstance(gathered_urls_raw, dict):
-            gathered_urls_data = gathered_urls_raw
-        elif isinstance(gathered_urls_raw, str):
+        if raw_text_output_from_gatherer:
             try:
-                # Attempt to parse it if it's a JSON string
-                parsed_data = json.loads(gathered_urls_raw)
-                if isinstance(parsed_data, dict):
+                parsed_data = json.loads(raw_text_output_from_gatherer)
+                if (
+                    isinstance(parsed_data, dict)
+                    and "web_urls" in parsed_data
+                    and "youtube_urls" in parsed_data
+                ):
                     gathered_urls_data = parsed_data
-                    log_warning(
+                    log_success(
                         logger,
-                        f"BACKGROUND [{session_id}]: 'gathered_urls' was a string but successfully parsed as JSON dict.",
+                        f"BACKGROUND [{session_id}]: Successfully parsed JSON output from InfoGathererAgent.",
                     )
                 else:
                     log_warning(
                         logger,
-                        f"BACKGROUND [{session_id}]: 'gathered_urls' was a string and parsed, but not into a dict. Value: {gathered_urls_raw}",
+                        f"BACKGROUND [{session_id}]: InfoGathererAgent output was JSON but not in expected format. Output: {raw_text_output_from_gatherer}",
                     )
             except json.JSONDecodeError:
                 log_warning(
                     logger,
-                    f"BACKGROUND [{session_id}]: 'gathered_urls' was a string but could not be parsed as JSON. Value: {gathered_urls_raw}",
+                    f"BACKGROUND [{session_id}]: InfoGathererAgent output was not valid JSON. Output: {raw_text_output_from_gatherer}",
                 )
-        elif gathered_urls_raw is not None:
-            log_warning(
-                logger,
-                f"BACKGROUND [{session_id}]: 'gathered_urls' was an unexpected type: {type(gathered_urls_raw)}. Value: {gathered_urls_raw}",
-            )
-
+                updated_session = await database.get_session(session_id, user_id)
+                fallback_data = (
+                    updated_session.state.get("gathered_urls_raw_text_output")
+                    if updated_session
+                    else None
+                )
+                if isinstance(fallback_data, str):
+                    try:
+                        parsed_fallback = json.loads(fallback_data)
+                        if isinstance(parsed_fallback, dict):
+                            gathered_urls_data = parsed_fallback
+                    except:
+                        pass
+                elif isinstance(fallback_data, dict):
+                    gathered_urls_data = fallback_data
         await database.update_session_state(
             session_id, user_id, {"gathered_urls": gathered_urls_data}
-        )  # Save the potentially corrected dict
-
+        )
         web_urls_count = (
             len(gathered_urls_data.get("web_urls", []))
             if isinstance(gathered_urls_data, dict)
@@ -187,62 +197,62 @@ async def run_agent_in_background(
             logger,
             f"BACKGROUND [{session_id}]: Sources gathered: {web_urls_count} web, {youtube_urls_count} video.",
         )
-        # --- END: THE FIX ---
-
-        # Step 3: Analyze Content (Web & Video)
-        await database.update_session_state(
-            session_id, user_id, {"status": "ANALYZING_CONTENT"}
-        )
-        summarizer_runner = Runner(
-            agent=parallel_summarizer,
-            session_service=session_service,
-            app_name=app_name,
-        )
-        async for _ in summarizer_runner.run_async(
-            session_id=session_id,
-            user_id=user_id,
-            new_message=types.Content(
-                role="user", parts=[types.Part(text="trigger summarizer")]
-            ),
-        ):
-            pass
-
-        updated_session_after_summarize = await database.get_session(
-            session_id, user_id
-        )
-        web_analysis_data = (
-            updated_session_after_summarize.state.get("web_analysis", "")
-            if updated_session_after_summarize
-            else ""
-        )
-        video_analysis_data = (
-            updated_session_after_summarize.state.get("video_analysis", "")
-            if updated_session_after_summarize
-            else ""
-        )
-
-        # Ensure web_analysis and video_analysis are strings, as expected by FactRankerAgent
-        if not isinstance(web_analysis_data, str):
+        if not web_urls_count and not youtube_urls_count:
             log_warning(
                 logger,
-                f"BACKGROUND [{session_id}]: web_analysis was not a string, converting. Type: {type(web_analysis_data)}",
+                f"BACKGROUND [{session_id}]: No URLs gathered, skipping content analysis.",
             )
-            web_analysis_data = str(web_analysis_data)
-        if not isinstance(video_analysis_data, str):
-            log_warning(
-                logger,
-                f"BACKGROUND [{session_id}]: video_analysis was not a string, converting. Type: {type(video_analysis_data)}",
+            await database.update_session_state(
+                session_id,
+                user_id,
+                {
+                    "web_analysis": "No web URLs to analyze.",
+                    "video_analysis": "No video URLs to analyze.",
+                },
             )
-            video_analysis_data = str(video_analysis_data)
-
-        await database.update_session_state(
-            session_id,
-            user_id,
-            {"web_analysis": web_analysis_data, "video_analysis": video_analysis_data},
-        )
+        else:
+            await database.update_session_state(
+                session_id, user_id, {"status": "ANALYZING_CONTENT"}
+            )
+            summarizer_runner = Runner(
+                agent=parallel_summarizer,
+                session_service=session_service,
+                app_name=app_name,
+            )
+            async for _ in summarizer_runner.run_async(
+                session_id=session_id,
+                user_id=user_id,
+                new_message=types.Content(
+                    role="user", parts=[types.Part(text="trigger summarizer")]
+                ),
+            ):
+                pass
+            updated_session_after_summarize = await database.get_session(
+                session_id, user_id
+            )
+            web_analysis_data = (
+                updated_session_after_summarize.state.get("web_analysis", "")
+                if updated_session_after_summarize
+                else ""
+            )
+            video_analysis_data = (
+                updated_session_after_summarize.state.get("video_analysis", "")
+                if updated_session_after_summarize
+                else ""
+            )
+            if not isinstance(web_analysis_data, str):
+                web_analysis_data = str(web_analysis_data)
+            if not isinstance(video_analysis_data, str):
+                video_analysis_data = str(video_analysis_data)
+            await database.update_session_state(
+                session_id,
+                user_id,
+                {
+                    "web_analysis": web_analysis_data,
+                    "video_analysis": video_analysis_data,
+                },
+            )
         log_success(logger, f"BACKGROUND [{session_id}]: Content analysis complete.")
-
-        # Step 4: Generate Final Verdict
         await database.update_session_state(
             session_id, user_id, {"status": "GENERATING_VERDICT"}
         )
@@ -263,8 +273,6 @@ async def run_agent_in_background(
                 )
                 final_fact_check_result = result.model_dump()
         log_success(logger, f"BACKGROUND [{session_id}]: Final verdict generated.")
-
-        # Step 5: Complete
         await database.update_session_state(
             session_id,
             user_id,
@@ -274,7 +282,6 @@ async def run_agent_in_background(
             logger,
             f"BACKGROUND: Successfully completed and stored result for session {session_id}.",
         )
-
     except Exception as e:
         log_error(
             logger,
@@ -286,7 +293,7 @@ async def run_agent_in_background(
         )
 
 
-# --- API Endpoints --- (Unchanged)
+# --- API Endpoints ---
 @app.post(
     "/query", response_model=QuerySubmitResponse, status_code=status.HTTP_202_ACCEPTED
 )
@@ -294,14 +301,14 @@ async def submit_query(
     request: Request, payload: QueryRequest, background_tasks: BackgroundTasks
 ):
     log_info(logger, f"API: Job accepted for session '{payload.session_id}'")
-    session_service = request.app.state.session_service
+    session_service_instance = request.app.state.session_service  # Renamed for clarity
     app_name = request.app.state.app_name
     await database.ensure_session_exists_async(
         session_id=payload.session_id, user_id=payload.user_id, query=payload.query
     )
     background_tasks.add_task(
         run_agent_in_background,
-        session_service,
+        session_service_instance,
         app_name,
         payload.user_id,
         payload.session_id,
@@ -337,7 +344,9 @@ async def get_query_result(session_id: str, user_id: str):
 async def get_all_user_sessions(user_id: str):
     log_info(logger, f"API: Fetching all sessions for user '{user_id}'")
     try:
-        sessions = await database.get_all_sessions_for_user_async(user_id)
+        sessions_response = database.list_sessions_sync(
+            user_id
+        )  # This now calls get_all_sessions_for_user_async
         session_infos = [
             SessionInfo(
                 id=s.id,
@@ -352,11 +361,19 @@ async def get_all_user_sessions(user_id: str):
                     else None
                 ),
             )
-            for s in sessions
+            for s in (
+                sessions_response.sessions
+                if sessions_response and hasattr(sessions_response, "sessions")
+                else []
+            )
         ]
         return ListSessionsResponse(sessions=session_infos)
     except Exception as e:
-        log_error(logger, f"API: Failed to get sessions for user {user_id}. Error: {e}")
+        log_error(
+            logger,
+            f"API: Failed to get sessions for user {user_id}. Error: {e}",
+            exc_info=True,
+        )
         raise HTTPException(status_code=500, detail="Failed to retrieve sessions.")
 
 
@@ -375,6 +392,86 @@ async def delete_all_user_sessions(user_id: str):
         )
     except Exception as e:
         log_error(
-            logger, f"API: Failed to delete sessions for user {user_id}. Error: {e}"
+            logger,
+            f"API: Failed to delete sessions for user {user_id}. Error: {e}",
+            exc_info=True,
         )
         raise HTTPException(status_code=500, detail="Failed to delete sessions.")
+
+
+@app.get(
+    "/session/summary/{session_id}",
+    response_model=SessionSummaryResponse,
+    summary="Get Session Summary",
+)
+async def load_session_summary(session_id: str, user_id: str):
+    log_info(logger, f"API: Loading summary for session: {session_id}, user: {user_id}")
+    try:
+        summary_data = database.get_session_summary_sync(session_id, user_id)
+        if not summary_data:
+            log_warning(
+                logger, f"Session summary not found or not completed for {session_id}"
+            )
+            raise HTTPException(
+                status_code=404,
+                detail="Session not found, not completed, or summary data unavailable.",
+            )
+        return SessionSummaryResponse(session_id=session_id, summary=summary_data)
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        log_error(
+            logger,
+            f"Could not load session summary for {session_id}: {e}",
+            exc_info=True,
+        )
+        raise HTTPException(
+            status_code=500, detail=f"Could not load session summary: {e}"
+        )
+
+
+# --- START: NEW ENDPOINT FOR FULL EVENT HISTORY ---
+@app.get(
+    "/session/events/{session_id}",
+    response_model=FullEventHistoryResponse,
+    summary="Get Full Event History for a Session",
+    description="Retrieves all events (user messages, agent responses, tool calls) for a specific session, ordered chronologically.",
+    responses={404: {"model": Dict[str, str]}, 500: {"model": Dict[str, str]}},
+)
+async def get_session_event_history(session_id: str, user_id: str):
+    log_info(
+        logger,
+        f"API: Fetching full event history for session: {session_id}, user: {user_id}",
+    )
+    try:
+        # Use the synchronous wrapper for simplicity in the endpoint
+        history_events = database.get_full_session_event_history_sync(
+            session_id, user_id
+        )
+
+        if not history_events and not await database.get_session(
+            session_id, user_id
+        ):  # Check if session exists at all
+            log_warning(
+                logger,
+                f"No session found for session_id: {session_id}, user_id: {user_id}",
+            )
+            raise HTTPException(status_code=404, detail="Session not found.")
+
+        return FullEventHistoryResponse(
+            session_id=session_id, user_id=user_id, history=history_events
+        )
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        log_error(
+            logger,
+            f"Could not load event history for session {session_id}: {e}",
+            exc_info=True,
+        )
+        raise HTTPException(
+            status_code=500, detail=f"Could not load event history: {e}"
+        )
+
+
+# --- END: NEW ENDPOINT ---
