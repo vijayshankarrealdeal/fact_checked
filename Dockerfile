@@ -2,6 +2,12 @@
 FROM python:3.10-slim
 
 # Set the working directory in the container
+RUN apt update && apt upgrade -y && \
+    apt install -y wget && \
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+    google-chrome --version
+
 WORKDIR /app
 
 # Copy the requirements file into the container at /app

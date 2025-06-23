@@ -4,6 +4,10 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+
 from fact_checker_agent.models.search_helper_models import Payload
 from utils import parse_html_content
 
@@ -19,7 +23,7 @@ def get_pooled_driver():
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--blink-settings=imagesEnabled=false") # Disable images
         chrome_options.page_load_strategy = "eager" # Don't wait for all resources
-        driver = webdriver.Chrome(options=chrome_options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         driver.set_page_load_timeout(20)
         setattr(thread_local, 'driver', driver)
     return driver

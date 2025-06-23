@@ -7,6 +7,7 @@ google-genai
 google-adk
 beautifulsoup4
 selenium
+webdriver-manager
 psycopg2-binary
 lxml
 google-search-results
