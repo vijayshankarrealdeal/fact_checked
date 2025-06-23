@@ -11,14 +11,13 @@ from google.adk.runners import Runner
 from google.genai import types
 from google.adk.sessions import DatabaseSessionService
 
-# Import the individual agents we will orchestrate manually
 from fact_checker_agent.agent import (
     query_processor_agent,
     info_gatherer_agent,
     parallel_summarizer,
     fact_ranker_agent,
 )
-from fact_checker_agent.db import database  # Contains APP_NAME
+from fact_checker_agent.db import database
 from fact_checker_agent.models.agent_output_models import (
     FactCheckResult,
     QuerySubmitResponse,
@@ -33,7 +32,7 @@ logger = get_logger("FactCheckerAPI")
 async def lifespan(app: FastAPI):
     log_info(logger, "--- Initializing ADK Session Service ---")
     app.state.session_service = database.session_service
-    app.state.app_name = database.APP_NAME  # Store app_name for later use
+    app.state.app_name = database.APP_NAME
     yield
     log_info(logger, "--- Application Shutting Down ---")
 
@@ -41,7 +40,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fact Checked API",
     description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
-    version="3.4.0",  # Version bumped for Runner API fixes
+    version="3.5.0",  # Version bumped for Event.output fix
     lifespan=lifespan,
 )
 app.add_middleware(
@@ -53,7 +52,7 @@ app.add_middleware(
 )
 
 
-# --- Models --- (Unchanged from previous correct version)
+# --- Models --- (Unchanged)
 class QueryRequest(BaseModel):
     user_id: str = Field(..., example="flutter_user_123")
     query: str = Field(..., example="Iran and US military conflict")
@@ -80,33 +79,26 @@ class DeleteResponse(BaseModel):
 
 async def run_agent_in_background(
     session_service: DatabaseSessionService,
-    app_name: str,  # Added app_name argument
+    app_name: str,
     user_id: str,
     session_id: str,
     initial_query: str,
 ):
-    """
-    Runs the agent pipeline step-by-step using a new Runner for each step.
-    """
     log_info(
         logger, f"BACKGROUND: Starting orchestrated pipeline for session {session_id}"
     )
-    # The 'state' dictionary is now managed implicitly through the session_service
-    # We will fetch necessary data from the session state as needed.
 
     try:
         # Step 1: Refine Query
         await database.update_session_state(
             session_id, user_id, {"status": "REFINING_QUERY"}
         )
-        # --- START: FIX for Runner.__init__ ---
         query_runner = Runner(
             agent=query_processor_agent,
             session_service=session_service,
             app_name=app_name,
         )
-        # --- END: FIX ---
-        refined_query = initial_query  # Default if agent fails
+        refined_query = initial_query
         async for event in query_runner.run_async(
             session_id=session_id,
             user_id=user_id,
@@ -116,6 +108,7 @@ async def run_agent_in_background(
         ):
             if event.is_final_response() and event.content and event.content.parts:
                 refined_query = event.content.parts[0].text
+        # The query_processor_agent directly outputs text, which becomes the 'search_query'
         await database.update_session_state(
             session_id, user_id, {"search_query": refined_query}
         )
@@ -127,29 +120,33 @@ async def run_agent_in_background(
         await database.update_session_state(
             session_id, user_id, {"status": "GATHERING_SOURCES"}
         )
-        # --- START: FIX for Runner.__init__ ---
         gatherer_runner = Runner(
             agent=info_gatherer_agent,
             session_service=session_service,
             app_name=app_name,
         )
-        # --- END: FIX ---
-        gathered_urls_data = {}
-        # --- START: FIX for Runner.run_async (remove state) ---
-        # The info_gatherer_agent will use the 'search_query' from the session state.
-        async for event in gatherer_runner.run_async(
+        # info_gatherer_agent is configured with output_key="gathered_urls".
+        # Its output will be in the session state after the run.
+        async for _ in gatherer_runner.run_async(
             session_id=session_id,
             user_id=user_id,
             new_message=types.Content(
-                role="user", parts=[types.Part(text="placeholder for state passing")]
+                role="user", parts=[types.Part(text="trigger gatherer")]
             ),
-        ):  # ADK expects a new_message if no prior events
-            # --- END: FIX ---
-            if event.is_final_response() and event.output:
-                gathered_urls_data = event.output
+        ):  # The message content is trivial here
+            pass  # We just need the runner to complete
+        # --- START: THE FIX ---
+        # Fetch the session to get the output placed there by the agent's output_key
+        updated_session = await database.get_session(session_id, user_id)
+        gathered_urls_data = (
+            updated_session.state.get("gathered_urls", {}) if updated_session else {}
+        )
+        # We still update the DB in case get_session somehow missed the very latest.
+        # This also ensures the state used by the next agent is definitely what we expect.
         await database.update_session_state(
             session_id, user_id, {"gathered_urls": gathered_urls_data}
         )
+        # --- END: THE FIX ---
         log_success(
             logger,
             f"BACKGROUND [{session_id}]: Sources gathered: {len(gathered_urls_data.get('web_urls',[]))} web, {len(gathered_urls_data.get('youtube_urls',[]))} video.",
@@ -159,58 +156,58 @@ async def run_agent_in_background(
         await database.update_session_state(
             session_id, user_id, {"status": "ANALYZING_CONTENT"}
         )
-        # --- START: FIX for Runner.__init__ ---
         summarizer_runner = Runner(
             agent=parallel_summarizer,
             session_service=session_service,
             app_name=app_name,
         )
-        # --- END: FIX ---
-        analysis_output = {}
-        # --- START: FIX for Runner.run_async (remove state) ---
-        # The parallel_summarizer will use 'gathered_urls' from the session state.
-        async for event in summarizer_runner.run_async(
+        # parallel_summarizer will put 'web_analysis' and 'video_analysis' into the session state.
+        async for _ in summarizer_runner.run_async(
             session_id=session_id,
             user_id=user_id,
             new_message=types.Content(
-                role="user", parts=[types.Part(text="placeholder for state passing")]
+                role="user", parts=[types.Part(text="trigger summarizer")]
             ),
         ):
-            # --- END: FIX ---
-            if event.is_final_response() and event.output:
-                analysis_output = (
-                    event.output
-                )  # Contains web_analysis and video_analysis
+            pass
+        # --- START: THE FIX ---
+        updated_session_after_summarize = await database.get_session(
+            session_id, user_id
+        )
+        web_analysis_data = (
+            updated_session_after_summarize.state.get("web_analysis", "")
+            if updated_session_after_summarize
+            else ""
+        )
+        video_analysis_data = (
+            updated_session_after_summarize.state.get("video_analysis", "")
+            if updated_session_after_summarize
+            else ""
+        )
         await database.update_session_state(
             session_id,
             user_id,
-            {
-                "web_analysis": analysis_output.get("web_analysis"),
-                "video_analysis": analysis_output.get("video_analysis"),
-            },
+            {"web_analysis": web_analysis_data, "video_analysis": video_analysis_data},
         )
+        # --- END: THE FIX ---
         log_success(logger, f"BACKGROUND [{session_id}]: Content analysis complete.")
 
         # Step 4: Generate Final Verdict
         await database.update_session_state(
             session_id, user_id, {"status": "GENERATING_VERDICT"}
         )
-        # --- START: FIX for Runner.__init__ ---
         ranker_runner = Runner(
             agent=fact_ranker_agent, session_service=session_service, app_name=app_name
         )
-        # --- END: FIX ---
         final_fact_check_result = None
-        # --- START: FIX for Runner.run_async (remove state) ---
-        # The fact_ranker_agent will use 'web_analysis' and 'video_analysis' from session state.
+        # fact_ranker_agent directly outputs its structured result.
         async for event in ranker_runner.run_async(
             session_id=session_id,
             user_id=user_id,
             new_message=types.Content(
-                role="user", parts=[types.Part(text="placeholder for state passing")]
+                role="user", parts=[types.Part(text="trigger ranker")]
             ),
         ):
-            # --- END: FIX ---
             if event.is_final_response() and event.content and event.content.parts:
                 result = FactCheckResult.model_validate_json(
                     event.content.parts[0].text
@@ -240,7 +237,7 @@ async def run_agent_in_background(
         )
 
 
-# --- API Endpoints ---
+# --- API Endpoints --- (Unchanged from previous correct version)
 @app.post(
     "/query", response_model=QuerySubmitResponse, status_code=status.HTTP_202_ACCEPTED
 )
@@ -249,14 +246,14 @@ async def submit_query(
 ):
     log_info(logger, f"API: Job accepted for session '{payload.session_id}'")
     session_service = request.app.state.session_service
-    app_name = request.app.state.app_name  # Get app_name from app state
+    app_name = request.app.state.app_name
     await database.ensure_session_exists_async(
         session_id=payload.session_id, user_id=payload.user_id, query=payload.query
     )
     background_tasks.add_task(
         run_agent_in_background,
         session_service,
-        app_name,  # Pass app_name
+        app_name,
         payload.user_id,
         payload.session_id,
         payload.query,
