@@ -7,14 +7,26 @@ from fact_checker_agent.tool.llm_calls import generate_bulk_ytd_summary
 from fact_checker_agent.tool.search_executor import SearchExecutor
 from fact_checker_agent.tool.url_executor import extract_external_links_info
 from utils import is_duration_within_limit
-from fact_checker_agent.logger import get_logger, log_tool_call, log_info, log_success, log_warning
+from fact_checker_agent.logger import (
+    get_logger,
+    log_tool_call,
+    log_info,
+    log_success,
+    log_warning,
+)
 from google import genai
 from google.genai.types import HttpOptions
 from google.genai import types
 from google.api_core import exceptions as google_exceptions
 
-from fact_checker_agent.db.llm_version import PRO_MODEL
-from fact_checker_agent.logger import get_logger, log_info, log_warning, log_success, log_error
+from fact_checker_agent.db.llm_version import PRO_MODEL_V2
+from fact_checker_agent.logger import (
+    get_logger,
+    log_info,
+    log_warning,
+    log_success,
+    log_error,
+)
 
 logger = get_logger(__name__)
 
@@ -37,11 +49,15 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
     scraped_data = await extract_external_links_info(urls)
     client = genai.Client(http_options=HttpOptions(api_version="v1"))
     valid_pages = [
-        page for page in scraped_data
-        if page.get("content_summary") and not page.get("content_summary").startswith("Could not extract")
+        page
+        for page in scraped_data
+        if page.get("content_summary")
+        and not page.get("content_summary").startswith("Could not extract")
     ]
     if not valid_pages:
-        log_warning(logger, "TOOL: Could not extract content from any provided web pages.")
+        log_warning(
+            logger, "TOOL: Could not extract content from any provided web pages."
+        )
         return {
             "content": "Could not extract content from any of the provided web pages.",
             "sources": [],
@@ -49,8 +65,11 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
 
     # --- START: THE MAIN FIX ---
     # Instead of just concatenating, we build a context block and ask the LLM to summarize it.
-    log_info(logger, f"TOOL: Creating combined context from {len(valid_pages)} pages for LLM summarization.")
-    
+    log_info(
+        logger,
+        f"TOOL: Creating combined context from {len(valid_pages)} pages for LLM summarization.",
+    )
+
     context_block = ""
     source_links = []
     for page in valid_pages:
@@ -58,29 +77,31 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
         truncated_content = page.get("content_summary", "")[:8000]
         context_block += f"--- Source: {page.get('title')} ({page.get('link')}) ---\n"
         context_block += f"{truncated_content}\n\n"
-        source_links.append(page.get('link'))
+        source_links.append(page.get("link"))
 
-    # Now, call the LLM to create a single, cohesive summary
-
+    
     contents = [
         types.Content(
             role="user",
             parts=[
-                context_block,
-                types.Part.from_text(text="""]\ Based on the following articles, please provide a comprehensive, neutral summary of the key points, agreements, and disagreements regarding the user's query."""),
+                types.Part.from_text(
+                    text=f"""Given the Article Generate The Summary\nThe Article\n{context_block}"""
+                ),
             ],
         ),
     ]
     generate_content_config = types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(thinking_budget=-1),
         response_mime_type="text/plain",
-        system_instruction=[types.Part.from_text(text="""You analyse the Video and generate the summary of it.""")],
+        system_instruction=[
+            types.Part.from_text(
+                text="""Based on the following articles, please provide a comprehensive, neutral summary of the key points, agreements, and disagreements regarding the user's query."""
+            ),
+        ],
     )
-
     for attempt in range(MAX_RETRIES):
         try:
             resp = client.models.generate_content(
-                model=PRO_MODEL,
+                model=PRO_MODEL_V2,
                 contents=contents,
                 config=generate_content_config,
             )
@@ -89,19 +110,27 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
         except google_exceptions.ResourceExhausted as e:
             if attempt < MAX_RETRIES - 1:
                 # Exponential backoff with jitter
-                backoff_time = INITIAL_BACKOFF_SECONDS * (2 ** attempt) + random.uniform(0, 1)
-                log_warning(logger, f"Rate limit hit for {context_block}. Retrying in {backoff_time:.2f} seconds... (Attempt {attempt + 1}/{MAX_RETRIES})")
+                backoff_time = INITIAL_BACKOFF_SECONDS * (
+                    2**attempt
+                ) + random.uniform(0, 1)
+                log_warning(
+                    logger,
+                    f"Rate limit hit for {context_block}. Retrying in {backoff_time:.2f} seconds... (Attempt {attempt + 1}/{MAX_RETRIES})",
+                )
                 time.sleep(backoff_time)
             else:
-                log_error(logger, f"Failed to summarize video {context_block} after {MAX_RETRIES} attempts due to rate limiting. Error: {e}")
+                log_error(
+                    logger,
+                    f"Failed to summarize video {context_block} after {MAX_RETRIES} attempts due to rate limiting. Error: {e}",
+                )
                 return f"Error: Rate limit exhausted for video {context_block} after multiple retries."
         except Exception as e:
-            log_error(logger, f"An unexpected error occurred while summarizing video {context_block}. Error: {e}")
+            log_error(
+                logger,
+                f"An unexpected error occurred while summarizing video {context_block}. Error: {e}",
+            )
             return f"Error: An unexpected error occurred for video {context_block}: {e}"
-    return {
-        "content": summary_text,
-        "sources": source_links
-    }
+    return {"content": summary_text, "sources": source_links}
     # --- END: THE MAIN FIX ---
 
 
@@ -109,16 +138,17 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> Dict[st
     """
     Filters videos, calls the summarization tool, and formats the output.
     """
-    log_tool_call(logger, "summarize_youtube_videos_in_bulk", f"Received {len(urls)} URLs for query '{query}'")
+    log_tool_call(
+        logger,
+        "summarize_youtube_videos_in_bulk",
+        f"Received {len(urls)} URLs for query '{query}'",
+    )
     if not urls:
         log_warning(logger, "TOOL: No YouTube videos to summarize.")
         return {"content": "No YouTube videos to summarize.", "sources": []}
 
     all_urls = [
-        url
-        for url in urls
-        if url.get("duration")
-        and "youtube" in url.get("link", "")
+        url for url in urls if url.get("duration") and "youtube" in url.get("link", "")
     ]
     short_urls_payloads = [
         p for p in all_urls if is_duration_within_limit(p["duration"], 6)
@@ -135,17 +165,17 @@ def summarize_youtube_videos_in_bulk(query: str, urls: List[Payload]) -> Dict[st
     log_info(logger, f"--- Sending {len(links_to_process)} video(s) to summarizer. ---")
     summaries_list = generate_bulk_ytd_summary(links_to_process)
 
-    log_success(logger, f"--- Finished. Generated {len(summaries_list)} video summaries. ---")
+    log_success(
+        logger, f"--- Finished. Generated {len(summaries_list)} video summaries. ---"
+    )
 
     final_analysis_parts = []
     final_source_urls = []
 
     for i, summary_text in enumerate(summaries_list):
         if i < len(short_urls_payloads):
-            link = short_urls_payloads[i]['link']
-            final_analysis_parts.append(
-                f"Source: ({link})\nSummary: {summary_text}\n"
-            )
+            link = short_urls_payloads[i]["link"]
+            final_analysis_parts.append(f"Source: ({link})\nSummary: {summary_text}\n")
             final_source_urls.append(link)
 
     combined_summary_text = "\n".join(final_analysis_parts)
@@ -170,11 +200,11 @@ def search_the_web_and_youtube(query: str) -> Dict[str, Any]:
 
     log_success(
         logger,
-        f"--- Found {len(web_urls)} web pages and {len(youtube_urls)} YouTube videos. ---"
+        f"--- Found {len(web_urls)} web pages and {len(youtube_urls)} YouTube videos. ---",
     )
     web_urls_dict = [urls.model_dump() for urls in web_urls]
     youtube_urls_dict = [
         urls.model_dump() for urls in youtube_urls if "youtube" in urls.link
     ]
-    
+
     return {"web_urls": web_urls_dict, "youtube_urls": youtube_urls_dict}
