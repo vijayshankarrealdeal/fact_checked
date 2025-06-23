@@ -18,5 +18,7 @@ gcloud run deploy factchecked \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
+  --memory=8Gi \
+  --cpu=4 \
   --remove-secrets="POSTGRES_PASSWORD,GOOGLE_SEARCH_APIS_KEY" \
   --set-env-vars="GOOGLE_CLOUD_PROJECT=blissful-mile-461403-i2,GOOGLE_CLOUD_LOCATION=global,GOOGLE_GENAI_USE_VERTEXAI=True,POSTGRES_USER=postgres,POSTGRES_PASSWORD=google99,POSTGRES_NAME=postgres,POSTGRES_HOST=34.60.85.117,GOOGLE_SEARCH_APIS_KEY=7b1cd00ef895ee1cf56bdf235b7237431ebb91906aa73ea4a5d2ed178cbdfe94"

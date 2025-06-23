@@ -6,7 +6,6 @@ python-dotenv
 google-genai
 google-adk
 beautifulsoup4
-gunicorn
 # Database Driver (can be removed if using the line above)
 psycopg2-binary
 lxml

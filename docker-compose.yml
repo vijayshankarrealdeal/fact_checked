@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13-alpine
+    volumes:
+      # This is the line that makes the data persistent.
+      # It maps the named volume 'postgres_data' (defined below)
+      # to the directory inside the container where PostgreSQL stores its data.
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=fastapi_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d fastapi_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./app
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db/fastapi_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+# This top-level 'volumes' key is where you declare the named volume.
+# Docker manages this volume, and it exists independently of the container's lifecycle.
+volumes:
+  postgres_data:

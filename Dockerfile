@@ -1,43 +1,20 @@
-#
-# ----- Builder Stage -----
-#
-FROM python:3.11-slim as builder
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
 
+# Set the working directory in the container
 WORKDIR /app
 
-# Create a non-privileged user
-RUN groupadd -r appuser && useradd --no-log-init -r -g appuser appuser
-
-# Install build dependencies
-RUN pip install --upgrade pip
+# Copy the requirements file into the container at /app
 COPY requirements.txt .
-RUN pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
 
-#
-# ----- Final Stage -----
-#
-FROM python:3.11-slim
+# Install any needed packages specified in requirements.txt
+# Use --no-cache-dir to keep the image size small
+RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /app
+# Copy the rest of the application's code into the container at /app
+COPY . .
 
-# Retrieve the non-privileged user from the builder stage
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-
-# Copy pre-built wheels and install them
-COPY --from=builder /wheels /wheels
-RUN pip install --no-cache /wheels/*
-
-# Copy your application code
-COPY --chown=appuser:appuser . .
-
-# Switch to the non-privileged user
-USER appuser
-
-# EXPOSE 8080 is good practice for documentation
-EXPOSE 8080
-
-# Use Gunicorn to run the app
-# The PORT environment variable is automatically set by Cloud Run.
-# The shell form (sh -c) is required for variable substitution.
-CMD ["sh", "-c", "gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:${PORT:-8080} main:app"]
+# Run uvicorn server
+# --host 0.0.0.0 makes the server accessible from outside the container
+# --reload enables auto-reloading for development
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
