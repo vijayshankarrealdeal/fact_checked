@@ -1,6 +1,5 @@
 # fact_checker_agent/agent.py
 
-from typing import List
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.agents.sequential_agent import SequentialAgent
 from google.adk.agents.parallel_agent import ParallelAgent

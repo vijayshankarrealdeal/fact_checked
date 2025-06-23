@@ -13,6 +13,7 @@ from fact_checker_agent.logger import (
     log_info,
     log_success,
     log_warning,
+        log_error,
 )
 from google import genai
 from google.genai.types import HttpOptions
@@ -20,13 +21,6 @@ from google.genai import types
 from google.api_core import exceptions as google_exceptions
 
 from fact_checker_agent.db.llm_version import PRO_MODEL_V2
-from fact_checker_agent.logger import (
-    get_logger,
-    log_info,
-    log_warning,
-    log_success,
-    log_error,
-)
 
 logger = get_logger(__name__)
 
