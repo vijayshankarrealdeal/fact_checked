@@ -88,7 +88,7 @@ async def query_agent(request: Request, payload: QueryRequest):
     try:
         # This call now uses the robust existence check.
         await database.ensure_session_exists_async(
-            session_id=payload.query,
+            session_id=payload.session_id,
             user_id=payload.user_id
         )
 
