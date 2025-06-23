@@ -6,7 +6,11 @@ import json
 from fact_checker_agent.models.search_helper_models import Payload
 from dotenv import load_dotenv
 import os
+from fact_checker_agent.logger import get_logger, log_info, log_success
+
 load_dotenv()
+logger = get_logger(__name__)
+
 
 class SearchExecutor:
 
@@ -14,7 +18,7 @@ class SearchExecutor:
         self.api_key = os.getenv("GOOGLE_SEARCH_APIS_KEY")
 
     def extract_search_information(self, query: str) -> list[Payload]:
-
+        log_info(logger, f"Executing search for query: '{query}'")
         simple_params = {
             "api_key": self.api_key,
             "engine": "google",
@@ -50,6 +54,7 @@ class SearchExecutor:
         }
         # search = GoogleSearch(simple_params)
         # results_common = search.get_dict()
+        log_info(logger, "Loading MOCK search results from local JSON files for testing.")
         with open("fact_checker_agent/tool/test_common.json", "r") as file:
             results_common = json.load(file)
         organic_results = [Payload(**item) for item in results_common.get("organic_results", [])]
@@ -58,14 +63,10 @@ class SearchExecutor:
 
         with open("fact_checker_agent/tool/test_payload_news.json", "r") as file:
             results_news = json.load(file)
-        # search = GoogleSearch(news_params)
-        # results_news = search.get_dict()
         news_results = [Payload(**item) for item in results_news.get("news_results", [])]
 
         with open("fact_checker_agent/tool/video_payload.json", "r") as file:
             results_video = json.load(file)
-        # search = GoogleSearch(video_params)
-        # results_video = search.get_dict()
         video_results_from_file = [Payload(**item) for item in results_video.get("video_results", [])]
         
         web_pages = list()
@@ -74,14 +75,12 @@ class SearchExecutor:
         all_web_results = organic_results + news_results
         
         for result in all_web_results:
-            # Simple heuristic to separate video links from web pages
             if "youtube.com" in result.link:
-                # Add to video list if not already present
                 if not any(v.link == result.link for v in video_pages):
                     video_pages.append(result)
             else:
-                # Add to web page list if not already present
                 if not any(w.link == result.link for w in web_pages):
                     web_pages.append(result)
 
+        log_success(logger, f"Search completed. Found {len(web_pages)} web pages and {len(video_pages)} videos.")
         return web_pages, video_pages

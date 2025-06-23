@@ -14,11 +14,14 @@ from google.genai import types
 from fact_checker_agent.agent import root_agent
 from fact_checker_agent.db import database
 from fact_checker_agent.models.agent_output_models import FactCheckResult, SessionHistoryResponse
+from fact_checker_agent.logger import get_logger, log_info, log_error, log_success, log_warning, log_api_request, log_api_response, BColors
 
 # --- FastAPI Lifespan Management ---
+logger = get_logger("FactCheckerAPI")
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("--- Initializing ADK Runner ---")
+    log_info(logger, "--- Initializing ADK Runner ---")
     runner = Runner(
         agent=root_agent,
         app_name="FactCheckerADK",
@@ -26,13 +29,13 @@ async def lifespan(app: FastAPI):
     )
     app.state.runner = runner
     yield
-    print("--- Application Shutting Down ---")
+    log_info(logger, "--- Application Shutting Down ---")
 
 # --- FastAPI App Initialization ---
 app = FastAPI(
     title="Fact Checked API",
     description="An API for running the Fact Checker agent pipeline.",
-    version="1.5.0", # Version bumped to reflect the final fix
+    version="1.6.0", # Version bumped for logging feature
     lifespan=lifespan
 )
 
@@ -70,15 +73,7 @@ class ListSessionsResponse(BaseModel):
     sessions: List[SessionInfo]
 
 
-
-
-
-
 # --- API Endpoints ---
-
-
-
-
 @app.post(
     "/query",
     response_model=QueryResponse,
@@ -89,31 +84,41 @@ class ListSessionsResponse(BaseModel):
 async def query_agent(request: Request, payload: QueryRequest):
     """
     This endpoint is the core of the application. It orchestrates the agent
-    pipeline. It implements a "create on demand" session logic.
+    pipeline and implements "create on demand" session logic.
     """
+    log_api_request(logger, f"Received query for user '{payload.user_id}' on session '{payload.session_id}'. Query: '{payload.query}'")
     runner = request.app.state.runner
 
     try:
-        # This call now uses the robust existence check.
         await database.ensure_session_exists_async(
             session_id=payload.session_id,
             user_id=payload.user_id
         )
 
-        # Now, we can safely run the agent, as the session is guaranteed to exist.
+        log_info(logger, f"Starting agent execution for session_id: {payload.session_id}")
         async for event in runner.run_async(
             user_id=payload.user_id,
             session_id=payload.session_id,
             new_message=types.Content(role="user", parts=[types.Part(text=payload.query)]),
         ):
-            print(f"--- Event from {event.author} (ID: {event.id}) ---")
+            log_info(logger, f"--- Event from {BColors.OKCYAN}{event.author}{BColors.ENDC} (ID: {event.id}) ---")
+
+            # LOGGING FIX: Handle function calls and text parts separately
+            if event.content and event.content.parts:
+                for part in event.content.parts:
+                    if part.function_call:
+                        log_warning(logger, f"Agent '{event.author}' is calling tool: {BColors.WARNING}{part.function_call.name}{BColors.ENDC}")
+                    if part.text:
+                         log_info(logger, f"Agent '{event.author}' produced text part.")
+
 
             if event.is_final_response() and event.author == "FactRankerAgent":
-                if event.content and event.content.parts:
+                log_success(logger, "FactRankerAgent produced the final response.")
+                if event.content and event.content.parts and event.content.parts[0].text:
                     final_json_string = event.content.parts[0].text
                     try:
                         result = FactCheckResult.model_validate_json(final_json_string)
-                        return QueryResponse(
+                        response_data = QueryResponse(
                             session_id=payload.session_id,
                             verdict=result.verdict,
                             credibility_score=result.credibility_score,
@@ -121,14 +126,17 @@ async def query_agent(request: Request, payload: QueryRequest):
                             full_explanation=result.full_explanation,
                             sources=result.sources
                         )
+                        log_api_response(logger, f"Sending final response for session '{payload.session_id}'. Verdict: {result.verdict}")
+                        return response_data
                     except Exception as e:
-                        print(f"Error parsing final agent response: {e}")
+                        log_error(logger, f"Error parsing final agent JSON response: {e}. Raw response: {final_json_string}")
                         raise HTTPException(status_code=500, detail=f"Error processing agent's final output: {e}")
 
+        log_error(logger, "Agent pipeline finished without a valid final response from FactRankerAgent.")
         raise HTTPException(status_code=500, detail="Agent pipeline finished without a valid final response.")
 
     except Exception as e:
-        print(f"FATAL ERROR IN AGENT EXECUTION: {e}")
+        log_error(logger, f"FATAL ERROR IN AGENT EXECUTION: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -141,14 +149,16 @@ async def query_agent(request: Request, payload: QueryRequest):
 )
 def list_past_sessions(user_id: str):
     """
-    This is a synchronous endpoint, so it's okay for it to use the
-    synchronous wrapper from the database module.
+    Synchronous endpoint to list user sessions.
     """
+    log_api_request(logger, f"Listing sessions for user: {user_id}")
     try:
         sessions_response = database.list_sessions_sync(user_id)
         valid_sessions = [s for s in sessions_response.sessions if hasattr(s, 'create_time')]
+        log_api_response(logger, f"Found {len(valid_sessions)} sessions for user: {user_id}")
         return ListSessionsResponse(sessions=valid_sessions)
     except Exception as e:
+        log_error(logger, f"Could not load sessions for user {user_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Could not load sessions: {e}")
 
 
@@ -161,13 +171,16 @@ def list_past_sessions(user_id: str):
 )
 def load_past_session_chats(session_id: str, user_id: str):
     """
-    This is a synchronous endpoint, so it's okay for it to use the
-    synchronous wrapper from the database module.
+    Synchronous endpoint to retrieve session history.
     """
+    log_api_request(logger, f"Loading history for session: {session_id}, user: {user_id}")
     try:
         history = database.get_session_history_sync(session_id, user_id)
         if not history:
+             log_warning(logger, f"Session not found or history is empty for session_id: {session_id}")
              raise HTTPException(status_code=404, detail="Session not found or history is empty.")
+        log_api_response(logger, f"Successfully loaded history for session: {session_id}")
         return SessionHistoryResponse(session_id=session_id, history=history)
     except Exception as e:
+        log_error(logger, f"Could not load session history for {session_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Could not load session history: {e}")

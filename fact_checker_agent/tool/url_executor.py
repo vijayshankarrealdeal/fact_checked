@@ -10,7 +10,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from fact_checker_agent.models.search_helper_models import Payload
 from utils import parse_html_content
+from fact_checker_agent.logger import get_logger, log_info, log_error, log_success
 
+logger = get_logger(__name__)
 thread_local = threading.local()
 
 def get_pooled_driver():
@@ -33,25 +35,26 @@ def close_all_drivers(pool: dict):
     for thread_id, driver in pool.items():
         try:
             driver.quit()
-            print(f"Closed driver for thread {thread_id}.")
+            log_info(logger, f"Closed driver for thread {thread_id}.")
         except Exception as e:
-            print(f"Could not close driver for thread {thread_id}: {e}")
+            log_error(logger, f"Could not close driver for thread {thread_id}: {e}")
 
 def extract_page_info(url_data: Payload) -> Payload:
-    # Expect a dictionary (Payload) and extract the url string from it.
     url_string = url_data.get('link',None)
     if not url_string:
-        print(f"Invalid URL data: {url_data}. Skipping extraction.")
+        log_error(logger, f"Invalid URL data: {url_data}. Skipping extraction.")
         return url_data
+    
     driver = get_pooled_driver()
     summary = ""
     try:
-        print(f"Scraping: {url_string}")
+        log_info(logger, f"Scraping: {url_string}")
         driver.get(url_string)
         summary = parse_html_content(driver.page_source)
+        log_success(logger, f"Successfully scraped and parsed: {url_string}")
     except Exception as e:
         summary = f"Could not extract content from {url_string}. Reason: {str(e)}"
-        print(summary)
+        log_error(logger, summary)
         # Reset driver on error
         driver.quit()
         setattr(thread_local, 'driver', None)
@@ -61,6 +64,7 @@ def extract_page_info(url_data: Payload) -> Payload:
 
 
 async def extract_external_links_info(urls: list[Payload]) -> list[Payload]:
+    log_info(logger, f"Starting parallel scrape for {len(urls)} URLs.")
     loop = asyncio.get_event_loop()
     with ThreadPoolExecutor(max_workers=8) as executor:
         futures = [loop.run_in_executor(executor, extract_page_info, url) for url in urls]
@@ -71,5 +75,7 @@ async def extract_external_links_info(urls: list[Payload]) -> list[Payload]:
     if driver:
         driver.quit()
         setattr(thread_local, 'driver', None)
+        log_info(logger, "Cleaned up main thread Selenium driver.")
         
+    log_success(logger, f"Finished parallel scraping. Processed {len(results)} URLs.")
     return results
