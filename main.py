@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 from contextlib import asynccontextmanager
 import datetime
+import json  # For safely parsing JSON strings
 
 from google.adk.runners import Runner
 from google.genai import types
@@ -23,7 +24,7 @@ from fact_checker_agent.models.agent_output_models import (
     QuerySubmitResponse,
     ResultResponse,
 )
-from fact_checker_agent.logger import get_logger, log_info, log_error, log_success
+from fact_checker_agent.logger import get_logger, log_info, log_error, log_success, log_warning
 
 logger = get_logger("FactCheckerAPI")
 
@@ -40,7 +41,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fact Checked API",
     description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
-    version="3.5.0",  # Version bumped for Event.output fix
+    version="3.5.1",  # Version bumped for string handling fix
     lifespan=lifespan,
 )
 app.add_middleware(
@@ -108,7 +109,6 @@ async def run_agent_in_background(
         ):
             if event.is_final_response() and event.content and event.content.parts:
                 refined_query = event.content.parts[0].text
-        # The query_processor_agent directly outputs text, which becomes the 'search_query'
         await database.update_session_state(
             session_id, user_id, {"search_query": refined_query}
         )
@@ -125,32 +125,69 @@ async def run_agent_in_background(
             session_service=session_service,
             app_name=app_name,
         )
-        # info_gatherer_agent is configured with output_key="gathered_urls".
-        # Its output will be in the session state after the run.
         async for _ in gatherer_runner.run_async(
             session_id=session_id,
             user_id=user_id,
             new_message=types.Content(
                 role="user", parts=[types.Part(text="trigger gatherer")]
             ),
-        ):  # The message content is trivial here
-            pass  # We just need the runner to complete
-        # --- START: THE FIX ---
-        # Fetch the session to get the output placed there by the agent's output_key
+        ):
+            pass
+
         updated_session = await database.get_session(session_id, user_id)
-        gathered_urls_data = (
-            updated_session.state.get("gathered_urls", {}) if updated_session else {}
+        gathered_urls_raw = (
+            updated_session.state.get("gathered_urls") if updated_session else None
         )
-        # We still update the DB in case get_session somehow missed the very latest.
-        # This also ensures the state used by the next agent is definitely what we expect.
+
+        # --- START: THE FIX ---
+        gathered_urls_data = {}
+        if isinstance(gathered_urls_raw, dict):
+            gathered_urls_data = gathered_urls_raw
+        elif isinstance(gathered_urls_raw, str):
+            try:
+                # Attempt to parse it if it's a JSON string
+                parsed_data = json.loads(gathered_urls_raw)
+                if isinstance(parsed_data, dict):
+                    gathered_urls_data = parsed_data
+                    log_warning(
+                        logger,
+                        f"BACKGROUND [{session_id}]: 'gathered_urls' was a string but successfully parsed as JSON dict.",
+                    )
+                else:
+                    log_warning(
+                        logger,
+                        f"BACKGROUND [{session_id}]: 'gathered_urls' was a string and parsed, but not into a dict. Value: {gathered_urls_raw}",
+                    )
+            except json.JSONDecodeError:
+                log_warning(
+                    logger,
+                    f"BACKGROUND [{session_id}]: 'gathered_urls' was a string but could not be parsed as JSON. Value: {gathered_urls_raw}",
+                )
+        elif gathered_urls_raw is not None:
+            log_warning(
+                logger,
+                f"BACKGROUND [{session_id}]: 'gathered_urls' was an unexpected type: {type(gathered_urls_raw)}. Value: {gathered_urls_raw}",
+            )
+
         await database.update_session_state(
             session_id, user_id, {"gathered_urls": gathered_urls_data}
+        )  # Save the potentially corrected dict
+
+        web_urls_count = (
+            len(gathered_urls_data.get("web_urls", []))
+            if isinstance(gathered_urls_data, dict)
+            else 0
         )
-        # --- END: THE FIX ---
+        youtube_urls_count = (
+            len(gathered_urls_data.get("youtube_urls", []))
+            if isinstance(gathered_urls_data, dict)
+            else 0
+        )
         log_success(
             logger,
-            f"BACKGROUND [{session_id}]: Sources gathered: {len(gathered_urls_data.get('web_urls',[]))} web, {len(gathered_urls_data.get('youtube_urls',[]))} video.",
+            f"BACKGROUND [{session_id}]: Sources gathered: {web_urls_count} web, {youtube_urls_count} video.",
         )
+        # --- END: THE FIX ---
 
         # Step 3: Analyze Content (Web & Video)
         await database.update_session_state(
@@ -161,7 +198,6 @@ async def run_agent_in_background(
             session_service=session_service,
             app_name=app_name,
         )
-        # parallel_summarizer will put 'web_analysis' and 'video_analysis' into the session state.
         async for _ in summarizer_runner.run_async(
             session_id=session_id,
             user_id=user_id,
@@ -170,7 +206,7 @@ async def run_agent_in_background(
             ),
         ):
             pass
-        # --- START: THE FIX ---
+
         updated_session_after_summarize = await database.get_session(
             session_id, user_id
         )
@@ -184,12 +220,26 @@ async def run_agent_in_background(
             if updated_session_after_summarize
             else ""
         )
+
+        # Ensure web_analysis and video_analysis are strings, as expected by FactRankerAgent
+        if not isinstance(web_analysis_data, str):
+            log_warning(
+                logger,
+                f"BACKGROUND [{session_id}]: web_analysis was not a string, converting. Type: {type(web_analysis_data)}",
+            )
+            web_analysis_data = str(web_analysis_data)
+        if not isinstance(video_analysis_data, str):
+            log_warning(
+                logger,
+                f"BACKGROUND [{session_id}]: video_analysis was not a string, converting. Type: {type(video_analysis_data)}",
+            )
+            video_analysis_data = str(video_analysis_data)
+
         await database.update_session_state(
             session_id,
             user_id,
             {"web_analysis": web_analysis_data, "video_analysis": video_analysis_data},
         )
-        # --- END: THE FIX ---
         log_success(logger, f"BACKGROUND [{session_id}]: Content analysis complete.")
 
         # Step 4: Generate Final Verdict
@@ -200,7 +250,6 @@ async def run_agent_in_background(
             agent=fact_ranker_agent, session_service=session_service, app_name=app_name
         )
         final_fact_check_result = None
-        # fact_ranker_agent directly outputs its structured result.
         async for event in ranker_runner.run_async(
             session_id=session_id,
             user_id=user_id,
@@ -237,7 +286,7 @@ async def run_agent_in_background(
         )
 
 
-# --- API Endpoints --- (Unchanged from previous correct version)
+# --- API Endpoints --- (Unchanged)
 @app.post(
     "/query", response_model=QuerySubmitResponse, status_code=status.HTTP_202_ACCEPTED
 )
