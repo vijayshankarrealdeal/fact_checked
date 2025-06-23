@@ -20,12 +20,18 @@ def generate_bulk_ytd_summary(urls: List[str]) -> List[str]:
         A list of Payloads, each containing a summary for one of the input videos.
     """
     if not urls:
-        return []
+        return [
+            {
+                "summary": "No URLs got for summarization, skipping."
+            }
+        ]
 
-    print(f"  -> Starting sequential summarization for {len(urls)} videos.")
+    print(f"-> Starting sequential summarization for {len(urls)} videos.")
     responses = []
     client = genai.Client(http_options=HttpOptions(api_version="v1"))
-    for i in urls[:2]:
+    if len(urls) > 4:
+        urls = urls[:2]
+    for i in urls:
         model = PRO_MODEL
         contents = [
             types.Content(
