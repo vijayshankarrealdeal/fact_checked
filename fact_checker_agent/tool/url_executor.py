@@ -65,6 +65,7 @@ def extract_page_info(url_data: Payload) -> Payload:
 
 async def extract_external_links_info(urls: list[Payload]) -> list[Payload]:
     log_info(logger, f"Starting parallel scrape for {len(urls)} URLs.")
+    urls = [url for url in urls if 'youtube' not in url['link']]
     loop = asyncio.get_event_loop()
     with ThreadPoolExecutor(max_workers=8) as executor:
         futures = [loop.run_in_executor(executor, extract_page_info, url) for url in urls]

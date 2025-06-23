@@ -1,12 +1,18 @@
 # fact_checker_agent/agent.py
 
+from typing import List
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.agents.sequential_agent import SequentialAgent
 from google.adk.agents.parallel_agent import ParallelAgent
 from fact_checker_agent.db.llm_version import FLASH_MODEL, PRO_MODEL
-from fact_checker_agent.tool.tools_interface import search_the_web_and_youtube, summarize_web_pages, summarize_youtube_videos_in_bulk
+from fact_checker_agent.models.search_helper_models import InSchema
+from fact_checker_agent.tool.tools_interface import (
+    search_the_web_and_youtube,
+    summarize_web_pages,
+    summarize_youtube_videos_in_bulk,
+)
 from fact_checker_agent.models.agent_output_models import FactCheckResult
-
+from google.genai import types as genai_types
 
 query_processor_agent = LlmAgent(
     name="QueryProcessorAgent",
@@ -37,6 +43,11 @@ info_gatherer_agent = LlmAgent(
     description="Uses tools to find web and video URLs based on a search query.",
     tools=[search_the_web_and_youtube],
     output_key="gathered_urls",
+    generate_content_config=genai_types.ToolConfig(
+        function_calling_config=genai_types.FunctionCallingConfig(
+            mode=genai_types.FunctionCallingConfigMode.ANY
+        )
+    ),
 )
 
 
@@ -53,7 +64,13 @@ web_summarizer_agent = LlmAgent(
     """,
     description="Scrapes, analyzes, and summarizes content from web articles.",
     tools=[summarize_web_pages],
+    input_schema=InSchema,
     output_key="web_analysis",
+    generate_content_config=genai_types.ToolConfig(
+        function_calling_config=genai_types.FunctionCallingConfig(
+            mode=genai_types.FunctionCallingConfigMode.ANY
+        )
+    ),
 )
 
 
@@ -62,7 +79,7 @@ video_summarizer_agent = LlmAgent(
     model=FLASH_MODEL,
     instruction="""
     You are a Video Content Analyst. Your job is to use the available tool
-    to summarize YouTube videos relevant to the user's query. Call the 
+    to summarize Only YouTube videos relevant to the user's query. Call the 
     `summarize_youtube_videos_in_bulk` tool with the list of YouTube URLs.
     Present the returned summary and source URLs in a clear, readable format.
     YouTube URLs to process:
@@ -70,7 +87,13 @@ video_summarizer_agent = LlmAgent(
     """,
     description="Analyzes and summarizes content from YouTube videos.",
     tools=[summarize_youtube_videos_in_bulk],
+    input_schema=InSchema,
     output_key="video_analysis",
+    generate_content_config=genai_types.ToolConfig(
+        function_calling_config=genai_types.FunctionCallingConfig(
+            mode=genai_types.FunctionCallingConfigMode.ANY
+        )
+    ),
 )
 
 parallel_summarizer = ParallelAgent(
@@ -79,7 +102,10 @@ parallel_summarizer = ParallelAgent(
         web_summarizer_agent,
         video_summarizer_agent,
     ],
-    description="Concurrently summarizes information from web articles and YouTube videos.",
+    description="""You are a Parallel Summarizer. Your task is to run both the WebSummarizerAgent and VideoSummarizerAgent concurrently.
+    You will receive the urls from the InfoGathererAgent and will call both **summarizers to gather information**.
+    IMPORTANT: You must wait for both summaries to complete before proceeding to the next step.
+    """
 )
 
 fact_ranker_agent = LlmAgent(

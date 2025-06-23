@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Fact Checked API",
     description="An API for running the Fact Checker agent pipeline.",
-    version="1.6.0", # Version bumped for logging feature
+    version="1.7.0", # Version bumped for summarization and stability fix
     lifespan=lifespan
 )
 
@@ -103,7 +103,6 @@ async def query_agent(request: Request, payload: QueryRequest):
         ):
             log_info(logger, f"--- Event from {BColors.OKCYAN}{event.author}{BColors.ENDC} (ID: {event.id}) ---")
 
-            # LOGGING FIX: Handle function calls and text parts separately
             if event.content and event.content.parts:
                 for part in event.content.parts:
                     if part.function_call:
@@ -111,9 +110,11 @@ async def query_agent(request: Request, payload: QueryRequest):
                     if part.text:
                          log_info(logger, f"Agent '{event.author}' produced text part.")
 
-
             if event.is_final_response() and event.author == "FactRankerAgent":
                 log_success(logger, "FactRankerAgent produced the final response.")
+                
+                # --- START: THE ROBUSTNESS FIX ---
+                # Safely check if the response has content before accessing it.
                 if event.content and event.content.parts and event.content.parts[0].text:
                     final_json_string = event.content.parts[0].text
                     try:
@@ -131,6 +132,11 @@ async def query_agent(request: Request, payload: QueryRequest):
                     except Exception as e:
                         log_error(logger, f"Error parsing final agent JSON response: {e}. Raw response: {final_json_string}")
                         raise HTTPException(status_code=500, detail=f"Error processing agent's final output: {e}")
+                else:
+                    # This block now handles the case that caused the crash.
+                    log_error(logger, "FactRankerAgent returned a final response but it was empty or malformed.")
+                    raise HTTPException(status_code=500, detail="Agent pipeline finished but the final analysis step produced an empty response.")
+                # --- END: THE ROBUSTNESS FIX ---
 
         log_error(logger, "Agent pipeline finished without a valid final response from FactRankerAgent.")
         raise HTTPException(status_code=500, detail="Agent pipeline finished without a valid final response.")

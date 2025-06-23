@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 DB_URL = os.getenv("DATABASE_URL")
 
 # --- Session Service Initialization (Unchanged) ---
-session_service = DatabaseSessionService(db_url=DB_URL)
+session_service = DatabaseSessionService(db_url="sqlite:///data.sqlite")
 
 
 # --- Core Async Functions ---
