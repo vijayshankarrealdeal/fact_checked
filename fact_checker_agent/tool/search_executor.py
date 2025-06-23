@@ -87,4 +87,4 @@ class SearchExecutor:
                     web_pages.append(result)
 
         log_success(logger, f"Search completed. Found {len(web_pages)} web pages and {len(video_pages)} videos.")
-        return web_pages[:8], video_pages[:8]
+        return web_pages[:5], video_pages[:5]

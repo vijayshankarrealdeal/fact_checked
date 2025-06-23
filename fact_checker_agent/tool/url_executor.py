@@ -68,7 +68,7 @@ def extract_page_info(url_data: Payload, driver_path: str) -> Payload:
             pass # Ignore errors on quit
         setattr(thread_local, 'driver', None)
     
-    url_data['content_summary'] = summary[:1000]
+    url_data['content_summary'] = summary[:2000]
     return url_data
 # --- END: THE FIX ---
 
