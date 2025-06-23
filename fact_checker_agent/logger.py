@@ -15,37 +15,33 @@ class BColors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-# Create a custom logger
 def get_logger(name: str):
-    """
-    Creates and configures a logger.
-    """
+    """Creates and configures a logger."""
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-
-    # Prevent adding duplicate handlers
     if not logger.handlers:
         ch = logging.StreamHandler(sys.stdout)
         ch.setLevel(logging.DEBUG)
-        # Basic formatter without color for general logging
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
         ch.setFormatter(formatter)
         logger.addHandler(ch)
-
     return logger
 
-# Pre-configured log functions with colors for specific purposes
-def log_info(logger, message):
-    logger.info(f"{BColors.OKBLUE}{message}{BColors.ENDC}")
+# --- START: THE FIX ---
+# Modified all log helpers to accept **kwargs to pass through extra arguments
+# like exc_info=True to the underlying logger.
+def log_info(logger, message, **kwargs):
+    logger.info(f"{BColors.OKBLUE}{message}{BColors.ENDC}", **kwargs)
 
-def log_success(logger, message):
-    logger.info(f"{BColors.OKGREEN}{message}{BColors.ENDC}")
+def log_success(logger, message, **kwargs):
+    logger.info(f"{BColors.OKGREEN}{message}{BColors.ENDC}", **kwargs)
 
-def log_warning(logger, message):
-    logger.warning(f"{BColors.WARNING}{message}{BColors.ENDC}")
+def log_warning(logger, message, **kwargs):
+    logger.warning(f"{BColors.WARNING}{message}{BColors.ENDC}", **kwargs)
 
-def log_error(logger, message):
-    logger.error(f"{BColors.FAIL}{message}{BColors.ENDC}")
+def log_error(logger, message, **kwargs):
+    logger.error(f"{BColors.FAIL}{message}{BColors.ENDC}", **kwargs)
+# --- END: THE FIX ---
 
 def log_agent_start(logger, agent_name):
     logger.info(f"{BColors.OKCYAN}🚀 --- [AGENT START]: {agent_name} --- 🚀{BColors.ENDC}")
