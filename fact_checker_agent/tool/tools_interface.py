@@ -1,14 +1,26 @@
 # fact_checker_agent/tool/tools_interface.py
+import random
+import time
 from typing import Any, List, Dict
-from google import genai
 from fact_checker_agent.models.search_helper_models import Payload
 from fact_checker_agent.tool.llm_calls import generate_bulk_ytd_summary
 from fact_checker_agent.tool.search_executor import SearchExecutor
 from fact_checker_agent.tool.url_executor import extract_external_links_info
 from utils import is_duration_within_limit
 from fact_checker_agent.logger import get_logger, log_tool_call, log_info, log_success, log_warning
-from fact_checker_agent.db.llm_version import FLASH_MODEL
+from google import genai
+from google.genai.types import HttpOptions
+from google.genai import types
+from google.api_core import exceptions as google_exceptions
 
+from fact_checker_agent.db.llm_version import PRO_MODEL
+from fact_checker_agent.logger import get_logger, log_info, log_warning, log_success, log_error
+
+logger = get_logger(__name__)
+
+# --- Configuration for Retry Logic ---
+MAX_RETRIES = 3
+INITIAL_BACKOFF_SECONDS = 2
 logger = get_logger(__name__)
 
 
@@ -23,7 +35,7 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
         return {"content": "No web pages to summarize.", "sources": []}
 
     scraped_data = await extract_external_links_info(urls)
-
+    client = genai.Client(http_options=HttpOptions(api_version="v1"))
     valid_pages = [
         page for page in scraped_data
         if page.get("content_summary") and not page.get("content_summary").startswith("Could not extract")
@@ -49,24 +61,43 @@ async def summarize_web_pages(urls: List[Payload]) -> Dict[str, Any]:
         source_links.append(page.get('link'))
 
     # Now, call the LLM to create a single, cohesive summary
-    try:
-        log_info(logger, "TOOL: Sending combined context to LLM for final web summary.")
-        model = genai.GenerativeModel(FLASH_MODEL)
-        prompt = f"""
-        Based on the following articles, please provide a comprehensive, neutral summary of the key points, agreements, and disagreements regarding the user's query.
 
-        ARTICLES:
-        {context_block}
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                context_block,
+                types.Part.from_text(text="""]\ Based on the following articles, please provide a comprehensive, neutral summary of the key points, agreements, and disagreements regarding the user's query."""),
+            ],
+        ),
+    ]
+    generate_content_config = types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(thinking_budget=-1),
+        response_mime_type="text/plain",
+        system_instruction=[types.Part.from_text(text="""You analyse the Video and generate the summary of it.""")],
+    )
 
-        SUMMARY:
-        """
-        response = await model.generate_content_async(prompt)
-        summary_text = response.text
-        log_success(logger, "TOOL: Successfully generated cohesive summary from web content.")
-    except Exception as e:
-        log_warning(logger, f"TOOL: LLM summarization failed: {e}. Falling back to concatenation.")
-        summary_text = "Could not generate a cohesive summary. See individual snippets." + context_block[:10000] # Fallback
-
+    for attempt in range(MAX_RETRIES):
+        try:
+            resp = client.models.generate_content(
+                model=PRO_MODEL,
+                contents=contents,
+                config=generate_content_config,
+            )
+            log_success(logger, f"Successfully summarized video: {context_block}")
+            summary_text = resp.text
+        except google_exceptions.ResourceExhausted as e:
+            if attempt < MAX_RETRIES - 1:
+                # Exponential backoff with jitter
+                backoff_time = INITIAL_BACKOFF_SECONDS * (2 ** attempt) + random.uniform(0, 1)
+                log_warning(logger, f"Rate limit hit for {context_block}. Retrying in {backoff_time:.2f} seconds... (Attempt {attempt + 1}/{MAX_RETRIES})")
+                time.sleep(backoff_time)
+            else:
+                log_error(logger, f"Failed to summarize video {context_block} after {MAX_RETRIES} attempts due to rate limiting. Error: {e}")
+                return f"Error: Rate limit exhausted for video {context_block} after multiple retries."
+        except Exception as e:
+            log_error(logger, f"An unexpected error occurred while summarizing video {context_block}. Error: {e}")
+            return f"Error: An unexpected error occurred for video {context_block}: {e}"
     return {
         "content": summary_text,
         "sources": source_links
