@@ -1,192 +1,221 @@
 # main.py
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, BackgroundTasks, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Dict, Any
 from contextlib import asynccontextmanager
-import datetime
 
 from google.adk.runners import Runner
 from google.genai import types
 
-# Import your business logic and data layer
-from fact_checker_agent.agent import root_agent
+from fact_checker_agent.agent import (
+    root_agent,
+    query_processor_agent,
+    info_gatherer_agent,
+    parallel_summarizer,
+    fact_ranker_agent,
+)
 from fact_checker_agent.db import database
-from fact_checker_agent.models.agent_output_models import FactCheckResult, SessionHistoryResponse
-from fact_checker_agent.logger import get_logger, log_info, log_error, log_success, log_warning, log_api_request, log_api_response, BColors
+from fact_checker_agent.models.agent_output_models import (
+    FactCheckResult,
+    QueryRequest,
+    QuerySubmitResponse,
+    ResultResponse,
+)
+from fact_checker_agent.logger import (
+    get_logger,
+    log_info,
+    log_error,
+    log_success,
+)
 
-# --- FastAPI Lifespan Management ---
 logger = get_logger("FactCheckerAPI")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log_info(logger, "--- Initializing ADK Runner ---")
-    runner = Runner(
+    app.state.runner = Runner(
         agent=root_agent,
         app_name="FactCheckerADK",
-        session_service=database.session_service
+        session_service=database.session_service,
     )
-    app.state.runner = runner
     yield
     log_info(logger, "--- Application Shutting Down ---")
 
-# --- FastAPI App Initialization ---
+
 app = FastAPI(
     title="Fact Checked API",
-    description="An API for running the Fact Checker agent pipeline.",
-    version="1.7.0", # Version bumped for summarization and stability fix
-    lifespan=lifespan
+    description="An asynchronous API for running the Fact Checker agent pipeline with status polling.",
+    version="3.0.0",
+    lifespan=lifespan,
 )
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# --- Pydantic Models for API (Unchanged) ---
-class QueryRequest(BaseModel):
-    user_id: str = Field(..., description="The user's unique identifier.", example="api_user_123")
-    query: str = Field(..., description="The claim or topic to fact-check.", example="Iran military conflict")
-    session_id: str = Field(..., description="The session ID to use. If it doesn't exist, it will be created.", example="sess_abc123")
 
-class QueryResponse(BaseModel):
-    session_id: str
-    verdict: str
-    credibility_score: Optional[int]
-    short_summary: str
-    full_explanation: str
-    sources: List[str]
 
-class ErrorResponse(BaseModel):
-    detail: str
+# --- Background Task Orchestrator ---
+async def run_agent_in_background(
+    runner: Runner, user_id: str, session_id: str, initial_query: str
+):
+    """
+    Runs the agent pipeline step-by-step, updating the session status in the DB.
+    """
+    log_info(logger, f"BACKGROUND: Starting pipeline for session {session_id}")
+    state: Dict[str, Any] = {"search_query": initial_query}
 
-class SessionInfo(BaseModel):
-    id: str
-    create_time: datetime.datetime
+    try:
+        # Step 1: Refine Query
+        await database.update_session_state(
+            session_id, user_id, {"status": "REFINING_QUERY"}
+        )
+        async for event in runner.run_async(
+            agent=query_processor_agent,
+            session_id=session_id,
+            user_id=user_id,
+            new_message=types.Content(
+                role="user", parts=[types.Part(text=initial_query)]
+            ),
+        ):
+            if event.is_final_response():
+                state["search_query"] = event.content.parts[0].text
+        await database.update_session_state(
+            session_id, user_id, {"search_query": state["search_query"]}
+        )
+        log_success(
+            logger,
+            f"BACKGROUND [{session_id}]: Query refined to '{state['search_query']}'",
+        )
 
-class ListSessionsResponse(BaseModel):
-    sessions: List[SessionInfo]
+        # Step 2: Gather Sources
+        await database.update_session_state(
+            session_id, user_id, {"status": "GATHERING_SOURCES"}
+        )
+        async for event in runner.run_async(
+            agent=info_gatherer_agent,
+            session_id=session_id,
+            user_id=user_id,
+            state=state,
+        ):
+            if event.is_final_response():
+                state.update(event.output)  # gets 'gathered_urls'
+        await database.update_session_state(
+            session_id, user_id, {"gathered_urls": state["gathered_urls"]}
+        )
+        log_success(logger, f"BACKGROUND [{session_id}]: Sources gathered.")
+
+        # Step 3: Analyze Content (Web & Video)
+        await database.update_session_state(
+            session_id, user_id, {"status": "ANALYZING_CONTENT"}
+        )
+        async for event in runner.run_async(
+            agent=parallel_summarizer,
+            session_id=session_id,
+            user_id=user_id,
+            state=state,
+        ):
+            if event.is_final_response():
+                state.update(event.output)  # gets 'web_analysis' and 'video_analysis'
+        await database.update_session_state(
+            session_id,
+            user_id,
+            {
+                "web_analysis": state.get("web_analysis"),
+                "video_analysis": state.get("video_analysis"),
+            },
+        )
+        log_success(logger, f"BACKGROUND [{session_id}]: Content analysis complete.")
+
+        # Step 4: Generate Final Verdict
+        await database.update_session_state(
+            session_id, user_id, {"status": "GENERATING_VERDICT"}
+        )
+        async for event in runner.run_async(
+            agent=fact_ranker_agent, session_id=session_id, user_id=user_id, state=state
+        ):
+            if event.is_final_response():
+                result = FactCheckResult.model_validate_json(
+                    event.content.parts[0].text
+                )
+                state["final_fact_check_result"] = result.model_dump()
+        log_success(logger, f"BACKGROUND [{session_id}]: Final verdict generated.")
+
+        # Step 5: Complete
+        await database.update_session_state(
+            session_id,
+            user_id,
+            {
+                "status": "COMPLETED",
+                "final_fact_check_result": state["final_fact_check_result"],
+            },
+        )
+        log_success(
+            logger,
+            f"BACKGROUND: Successfully completed and stored result for session {session_id}.",
+        )
+
+    except Exception as e:
+        log_error(
+            logger,
+            f"BACKGROUND [{session_id}]: Pipeline failed. Error: {e}",
+            exc_info=True,
+        )
+        await database.update_session_state(
+            session_id, user_id, {"status": "FAILED", "error_message": str(e)}
+        )
 
 
 # --- API Endpoints ---
 @app.post(
-    "/query",
-    response_model=QueryResponse,
-    summary="Run Fact Checker Agent (Creates Session if Needed)",
-    description="Takes a user query and a session ID. If the session ID does not exist, it is created automatically before running the query.",
-    responses={400: {"model": ErrorResponse}, 500: {"model": ErrorResponse}}
+    "/query", response_model=QuerySubmitResponse, status_code=status.HTTP_202_ACCEPTED
 )
-async def query_agent(request: Request, payload: QueryRequest):
-    """
-    This endpoint is the core of the application. It orchestrates the agent
-    pipeline and implements "create on demand" session logic.
-    """
-    log_api_request(logger, f"Received query for user '{payload.user_id}' on session '{payload.session_id}'. Query: '{payload.query}'")
+async def submit_query(
+    request: Request, payload: QueryRequest, background_tasks: BackgroundTasks
+):
+    """Accepts a query and starts the fact-checking process in the background."""
+    log_info(logger, f"API: Job accepted for session '{payload.session_id}'")
     runner = request.app.state.runner
 
-    try:
-        await database.ensure_session_exists_async(
-            session_id=payload.session_id,
-            user_id=payload.user_id
-        )
+    await database.ensure_session_exists_async(
+        session_id=payload.session_id, user_id=payload.user_id, query=payload.query
+    )
 
-        log_info(logger, f"Starting agent execution for session_id: {payload.session_id}")
-        async for event in runner.run_async(
-            user_id=payload.user_id,
-            session_id=payload.session_id,
-            new_message=types.Content(role="user", parts=[types.Part(text=payload.query)]),
-        ):
-            log_info(logger, f"--- Event from {BColors.OKCYAN}{event.author}{BColors.ENDC} (ID: {event.id}) ---")
+    background_tasks.add_task(
+        run_agent_in_background,
+        runner,
+        payload.user_id,
+        payload.session_id,
+        payload.query,
+    )
 
-            if event.content and event.content.parts:
-                for part in event.content.parts:
-                    if part.function_call:
-                        log_warning(logger, f"Agent '{event.author}' is calling tool: {BColors.WARNING}{part.function_call.name}{BColors.ENDC}")
-                    if part.text:
-                         log_info(logger, f"Agent '{event.author}' produced text part.")
-
-            if event.is_final_response() and event.author == "FactRankerAgent":
-                log_success(logger, "FactRankerAgent produced the final response.")
-                
-                # --- START: THE ROBUSTNESS FIX ---
-                # Safely check if the response has content before accessing it.
-                if event.content and event.content.parts and event.content.parts[0].text:
-                    final_json_string = event.content.parts[0].text
-                    try:
-                        result = FactCheckResult.model_validate_json(final_json_string)
-                        response_data = QueryResponse(
-                            session_id=payload.session_id,
-                            verdict=result.verdict,
-                            credibility_score=result.credibility_score,
-                            short_summary=result.short_summary,
-                            full_explanation=result.full_explanation,
-                            sources=result.sources
-                        )
-                        log_api_response(logger, f"Sending final response for session '{payload.session_id}'. Verdict: {result.verdict}")
-                        return response_data
-                    except Exception as e:
-                        log_error(logger, f"Error parsing final agent JSON response: {e}. Raw response: {final_json_string}")
-                        raise HTTPException(status_code=500, detail=f"Error processing agent's final output: {e}")
-                else:
-                    # This block now handles the case that caused the crash.
-                    log_error(logger, "FactRankerAgent returned a final response but it was empty or malformed.")
-                    raise HTTPException(status_code=500, detail="Agent pipeline finished but the final analysis step produced an empty response.")
-                # --- END: THE ROBUSTNESS FIX ---
-
-        log_error(logger, "Agent pipeline finished without a valid final response from FactRankerAgent.")
-        raise HTTPException(status_code=500, detail="Agent pipeline finished without a valid final response.")
-
-    except Exception as e:
-        log_error(logger, f"FATAL ERROR IN AGENT EXECUTION: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    return QuerySubmitResponse(
+        message="Fact-check job accepted. Poll the status endpoint for results.",
+        session_id=payload.session_id,
+        status_endpoint=f"/query/result/{payload.session_id}?user_id={payload.user_id}",
+    )
 
 
-@app.get(
-    "/sessions/{user_id}",
-    response_model=ListSessionsResponse,
-    summary="List User Sessions",
-    description="Retrieves a list of all past sessions for a specific user.",
-    responses={500: {"model": ErrorResponse}}
-)
-def list_past_sessions(user_id: str):
-    """
-    Synchronous endpoint to list user sessions.
-    """
-    log_api_request(logger, f"Listing sessions for user: {user_id}")
-    try:
-        sessions_response = database.list_sessions_sync(user_id)
-        valid_sessions = [s for s in sessions_response.sessions if hasattr(s, 'create_time')]
-        log_api_response(logger, f"Found {len(valid_sessions)} sessions for user: {user_id}")
-        return ListSessionsResponse(sessions=valid_sessions)
-    except Exception as e:
-        log_error(logger, f"Could not load sessions for user {user_id}: {e}")
-        raise HTTPException(status_code=500, detail=f"Could not load sessions: {e}")
+@app.get("/query/result/{session_id}", response_model=ResultResponse)
+async def get_query_result(session_id: str, user_id: str):
+    """Poll this endpoint to get the status and result of a fact-check job."""
+    session = await database.get_session(session_id, user_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found.")
 
+    session_status = session.state.get("status", "UNKNOWN")
+    final_result = session.state.get("final_fact_check_result")
 
-@app.get(
-    "/session/{session_id}",
-    response_model=SessionHistoryResponse,
-    summary="Get Session Chat History",
-    description="Retrieves the full chat history for a specific session.",
-    responses={404: {"model": ErrorResponse}, 500: {"model": ErrorResponse}}
-)
-def load_past_session_chats(session_id: str, user_id: str):
-    """
-    Synchronous endpoint to retrieve session history.
-    """
-    log_api_request(logger, f"Loading history for session: {session_id}, user: {user_id}")
-    try:
-        history = database.get_session_history_sync(session_id, user_id)
-        if not history:
-             log_warning(logger, f"Session not found or history is empty for session_id: {session_id}")
-             raise HTTPException(status_code=404, detail="Session not found or history is empty.")
-        log_api_response(logger, f"Successfully loaded history for session: {session_id}")
-        return SessionHistoryResponse(session_id=session_id, history=history)
-    except Exception as e:
-        log_error(logger, f"Could not load session history for {session_id}: {e}")
-        raise HTTPException(status_code=500, detail=f"Could not load session history: {e}")
+    log_info(logger, f"API: Status check for session '{session_id}': {session_status}")
+
+    return ResultResponse(
+        session_id=session_id,
+        status=session_status,
+        result=final_result if session_status == "COMPLETED" and final_result else None,
+    )
